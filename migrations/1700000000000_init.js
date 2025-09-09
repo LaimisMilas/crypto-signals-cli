@@ -16,7 +16,7 @@ export async function up(pgm) {
       volume: 'numeric'
     },
     {
-      primaryKey: ['symbol', 'open_time']
+      constraints: { primaryKey: ['symbol', 'open_time'] }
     }
   );
 
@@ -28,7 +28,7 @@ export async function up(pgm) {
       data: { type: 'jsonb', notNull: true }
     },
     {
-      primaryKey: ['symbol', 'open_time']
+      constraints: { primaryKey: ['symbol', 'open_time'] }
     }
   );
 
@@ -40,7 +40,7 @@ export async function up(pgm) {
       data: { type: 'jsonb', notNull: true }
     },
     {
-      primaryKey: ['symbol', 'open_time']
+      constraints: { primaryKey: ['symbol', 'open_time'] }
     }
   );
 
@@ -70,7 +70,6 @@ export async function up(pgm) {
     run_at: { type: 'bigint' }
   });
 
-  pgm.createIndex('candles_1m', ['symbol', 'open_time']);
   pgm.createIndex('signals', ['symbol', 'open_time']);
 }
 
