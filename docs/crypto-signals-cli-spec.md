@@ -392,3 +392,31 @@ trades.csv, equity.csv, metrics.json, config.json
 
 out/signals/<strategy>_<symbol>_<interval>_<date>.csv
 
+Priėmimo kriterijai (MVP)
+
+Galiu db:init, fetch:klines --resume, compute:indicators, detect:patterns, signals:generate.
+
+backtest:run su SidewaysReversal grąžina trades.csv, equity.csv, metrics.json.
+
+signals lentelėje yra įrašų su reason (JSON) ir strategy.
+
+Viskas veikia su bent 1 simboliu (SOLUSDT) ir intervalu 1m.
+
+docker compose up -d db adminer
+
+cp .env.example .env && npm i
+
+npm run migrate
+
+./bin/cs db:seed (įterpia SOLUSDT)
+
+./bin/cs fetch:klines --symbol SOLUSDT --interval 1m --resume
+
+./bin/cs compute:indicators --symbol SOLUSDT --interval 1m
+
+./bin/cs detect:patterns --symbol SOLUSDT --interval 1m
+
+./bin/cs signals:generate --strategy SidewaysReversal --symbol SOLUSDT --interval 1m
+
+./bin/cs backtest:run --strategy SidewaysReversal --symbol SOLUSDT --interval 1m --from 2025-06-01 --to 2025-09-01 --initial 10000
+
