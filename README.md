@@ -10,6 +10,7 @@ Start the PostgreSQL database and run migrations:
 
 ```bash
 docker compose up -d db
+
 npm install
 npm run migrate
 node bin/cs fetch:klines --symbol BTCUSDT
