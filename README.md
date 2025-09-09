@@ -6,7 +6,11 @@ Command line tools for fetching market data, computing indicators, detecting pat
 
 Copy `.env.example` to `.env` and adjust settings.
 
+Start the PostgreSQL database and run migrations:
+
 ```bash
+docker compose up -d db
+
 npm install
 npm run migrate
 node bin/cs fetch:klines --symbol BTCUSDT

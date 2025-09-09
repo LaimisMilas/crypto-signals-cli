@@ -4,30 +4,45 @@ export async function up(pgm) {
     symbol: { type: 'text', notNull: true, unique: true }
   });
 
-  pgm.createTable('candles_1m', {
-    symbol: { type: 'text', notNull: true },
-    open_time: { type: 'bigint', notNull: true },
-    open: 'numeric',
-    high: 'numeric',
-    low: 'numeric',
-    close: 'numeric',
-    volume: 'numeric',
-    primaryKey: ['symbol', 'open_time']
-  });
+  pgm.createTable(
+    'candles_1m',
+    {
+      symbol: { type: 'text', notNull: true },
+      open_time: { type: 'bigint', notNull: true },
+      open: 'numeric',
+      high: 'numeric',
+      low: 'numeric',
+      close: 'numeric',
+      volume: 'numeric'
+    },
+    {
+      primaryKey: ['symbol', 'open_time']
+    }
+  );
 
-  pgm.createTable('indicators_1m', {
-    symbol: { type: 'text', notNull: true },
-    open_time: { type: 'bigint', notNull: true },
-    data: { type: 'jsonb', notNull: true },
-    primaryKey: ['symbol', 'open_time']
-  });
+  pgm.createTable(
+    'indicators_1m',
+    {
+      symbol: { type: 'text', notNull: true },
+      open_time: { type: 'bigint', notNull: true },
+      data: { type: 'jsonb', notNull: true }
+    },
+    {
+      primaryKey: ['symbol', 'open_time']
+    }
+  );
 
-  pgm.createTable('patterns_1m', {
-    symbol: { type: 'text', notNull: true },
-    open_time: { type: 'bigint', notNull: true },
-    data: { type: 'jsonb', notNull: true },
-    primaryKey: ['symbol', 'open_time']
-  });
+  pgm.createTable(
+    'patterns_1m',
+    {
+      symbol: { type: 'text', notNull: true },
+      open_time: { type: 'bigint', notNull: true },
+      data: { type: 'jsonb', notNull: true }
+    },
+    {
+      primaryKey: ['symbol', 'open_time']
+    }
+  );
 
   pgm.createTable('signals', {
     id: 'id',
