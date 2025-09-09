@@ -199,6 +199,7 @@ create index on signals(symbol, ts);
 Taisyklės aprašomos JS faile arba YAML:
 
 ```yaml
+
 name: SidewaysReversal
 entry:
   side: buy
@@ -296,8 +297,8 @@ Visoms komandoms palaikyk `--dry-run`, `--limit`, `--verbose`.
 ├─ docker-compose.yml
 ├─ Makefile
 └─ README.md
-```
 
+```
 ## Binance integracija
 
 - Endpoint: `/api/v3/klines?symbol=SOLUSDT&interval=1m&startTime=&endTime=&limit=1000`
@@ -325,6 +326,7 @@ Visoms komandoms palaikyk `--dry-run`, `--limit`, `--verbose`.
 ## Docker
 
 ```yaml
+
 version: "3.9"
 services:
   db:
@@ -409,4 +411,3 @@ npm run lint
 - `out/backtest/<strategy>_<symbol>_<interval>_<from>_<to>/`
   - `trades.csv`, `equity.csv`, `metrics.json`, `config.json`
 - `out/signals/<strategy>_<symbol>_<interval>_<date>.csv`
-
