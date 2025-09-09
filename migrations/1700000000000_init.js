@@ -1,0 +1,71 @@
+export async function up(pgm) {
+  pgm.createTable('symbols', {
+    id: 'id',
+    symbol: { type: 'text', notNull: true, unique: true }
+  });
+
+  pgm.createTable('candles_1m', {
+    symbol: { type: 'text', notNull: true },
+    open_time: { type: 'bigint', notNull: true },
+    open: 'numeric',
+    high: 'numeric',
+    low: 'numeric',
+    close: 'numeric',
+    volume: 'numeric',
+    primaryKey: ['symbol', 'open_time']
+  });
+
+  pgm.createTable('indicators_1m', {
+    symbol: { type: 'text', notNull: true },
+    open_time: { type: 'bigint', notNull: true },
+    data: { type: 'jsonb', notNull: true },
+    primaryKey: ['symbol', 'open_time']
+  });
+
+  pgm.createTable('patterns_1m', {
+    symbol: { type: 'text', notNull: true },
+    open_time: { type: 'bigint', notNull: true },
+    data: { type: 'jsonb', notNull: true },
+    primaryKey: ['symbol', 'open_time']
+  });
+
+  pgm.createTable('signals', {
+    id: 'id',
+    symbol: { type: 'text', notNull: true },
+    open_time: { type: 'bigint', notNull: true },
+    signal: { type: 'text', notNull: true }
+  });
+
+  pgm.createTable('trades_paper', {
+    id: 'id',
+    symbol: { type: 'text', notNull: true },
+    open_time: { type: 'bigint', notNull: true },
+    qty: 'numeric',
+    price: 'numeric'
+  });
+
+  pgm.createTable('equity_paper', {
+    ts: { type: 'bigint', primaryKey: true },
+    equity: 'numeric'
+  });
+
+  pgm.createTable('jobs', {
+    id: 'id',
+    name: { type: 'text', notNull: true },
+    run_at: { type: 'bigint' }
+  });
+
+  pgm.createIndex('candles_1m', ['symbol', 'open_time']);
+  pgm.createIndex('signals', ['symbol', 'open_time']);
+}
+
+export async function down(pgm) {
+  pgm.dropTable('jobs');
+  pgm.dropTable('equity_paper');
+  pgm.dropTable('trades_paper');
+  pgm.dropTable('signals');
+  pgm.dropTable('patterns_1m');
+  pgm.dropTable('indicators_1m');
+  pgm.dropTable('candles_1m');
+  pgm.dropTable('symbols');
+}
