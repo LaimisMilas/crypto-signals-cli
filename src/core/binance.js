@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import config from '../config/index.js';
 import { query } from '../storage/db.js';
 import { insertCandles } from '../storage/repos/candles.js';
 import { getJobRunAt, setJobRunAt } from '../storage/repos/jobs.js';
@@ -88,12 +89,9 @@ export async function fetchKlinesRange({
   const jobName = `fetch:${symbol}:${interval}`;
   let from = startMs;
   if (resume) {
-    const jobRows = await query(
-      `select max((params->>'endMs')::bigint) as m from jobs where type='fetch' and params->>'symbol'=$1 and params->>'interval'=$2`,
-      [symbol, interval]
-    );
-    if (jobRows[0]?.m) {
-      from = Number(jobRows[0].m) + step;
+    const lastRun = await getJobRunAt(jobName);
+    if (lastRun !== null) {
+      from = lastRun + step;
     } else {
       const rows = await query(`select max(open_time) as m from candles_${interval} where symbol=$1`, [symbol]);
       if (rows[0]?.m) from = Number(rows[0].m) + step;
