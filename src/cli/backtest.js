@@ -47,9 +47,10 @@ export async function backtestRun(opts) {
     initialBalance: Number(initial),
     ...rest
   });
+  const tradesWithStatus = trades.map(t => ({ ...t, status: t.status || 'closed' }));
 
-  await insertTradesPaper(symbol, trades);
-  await insertEquityPaper(symbol, equity);
+  await insertTradesPaper(symbol, tradesWithStatus);
+  await insertEquityPaper('backtest', symbol, equity);
   logger.info(`backtest completed for ${symbol} using ${strategy}`);
   return { trades, equity };
 }

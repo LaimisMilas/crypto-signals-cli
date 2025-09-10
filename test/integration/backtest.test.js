@@ -28,5 +28,5 @@ test('backtest inserts trade and equity', async () => {
   expect(tradesRepo.insertTradesPaper).toHaveBeenCalled();
   expect(equityRepo.insertEquityPaper).toHaveBeenCalled();
   expect(tradesRepo.insertTradesPaper.mock.calls[0][1].length).toBeGreaterThan(0);
-  expect(equityRepo.insertEquityPaper.mock.calls[0][1].length).toBeGreaterThan(0);
+  expect(equityRepo.insertEquityPaper.mock.calls[0][2].length).toBeGreaterThan(0);
 });

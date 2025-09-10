@@ -11,8 +11,9 @@ export async function paperRun(opts) {
     initialBalance: Number(initial),
     ...rest
   });
-  await insertTradesPaper(symbol, trades);
-  await insertEquityPaper(symbol, equity);
+  const tradesWithStatus = trades.map(t => ({ ...t, status: t.status || 'closed' }));
+  await insertTradesPaper(symbol, tradesWithStatus);
+  await insertEquityPaper('paper', symbol, equity);
   logger.info(`paper trading completed for ${symbol} using ${strategy}`);
   return { trades, equity };
 }
