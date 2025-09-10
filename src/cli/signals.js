@@ -22,10 +22,20 @@ export async function signalsGenerate(opts) {
     [symbol]
   );
   const patterns = await query(
-    `select open_time, data from patterns_${interval} where symbol=$1`,
+    `select open_time, bullish_engulfing, bearish_engulfing, hammer, shooting_star from patterns_${interval} where symbol=$1`,
     [symbol]
   );
-  const patternMap = new Map(patterns.map(p => [p.open_time, p.data]));
+  const patternMap = new Map(
+    patterns.map((p) => [
+      p.open_time,
+      {
+        ...(p.bullish_engulfing && { bullishEngulfing: true }),
+        ...(p.bearish_engulfing && { bearishEngulfing: true }),
+        ...(p.hammer && { hammer: true }),
+        ...(p.shooting_star && { shootingStar: true }),
+      },
+    ])
+  );
 
   const signals = [];
   for (const row of indicators) {

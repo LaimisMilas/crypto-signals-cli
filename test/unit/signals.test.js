@@ -20,12 +20,24 @@ beforeEach(() => {
 test('generates signals for SidewaysReversal strategy', async () => {
   queryMock
     .mockResolvedValueOnce([
-      { open_time: 1, data: { hhll: { hh: true, ll: false } }, close: 0 },
-      { open_time: 2, data: { hhll: { hh: false, ll: true } }, close: 0 },
+      { open_time: 1, data: { trend: 'sideways', rsi: 20 }, close: 0 },
+      { open_time: 2, data: { trend: 'sideways', rsi: 80 }, close: 0 },
     ])
     .mockResolvedValueOnce([
-      { open_time: 1, data: { bullishEngulfing: true } },
-      { open_time: 2, data: { bearishEngulfing: true } },
+      {
+        open_time: 1,
+        bullish_engulfing: true,
+        bearish_engulfing: false,
+        hammer: false,
+        shooting_star: false,
+      },
+      {
+        open_time: 2,
+        bullish_engulfing: false,
+        bearish_engulfing: true,
+        hammer: false,
+        shooting_star: false,
+      },
     ]);
   await signalsGenerate({ symbol: 'BTC', interval: '1m', strategy: 'SidewaysReversal' });
   expect(upsertMock).toHaveBeenCalledWith('BTC', [
@@ -41,8 +53,20 @@ test('generates signals for BBRevert strategy', async () => {
       { open_time: 2, data: { bbands: { lower: 100, upper: 110 } }, close: 120 },
     ])
     .mockResolvedValueOnce([
-      { open_time: 1, data: {} },
-      { open_time: 2, data: {} },
+      {
+        open_time: 1,
+        bullish_engulfing: false,
+        bearish_engulfing: false,
+        hammer: false,
+        shooting_star: false,
+      },
+      {
+        open_time: 2,
+        bullish_engulfing: false,
+        bearish_engulfing: false,
+        hammer: false,
+        shooting_star: false,
+      },
     ]);
   await signalsGenerate({ symbol: 'ETH', interval: '1m', strategy: 'BBRevert' });
   expect(upsertMock).toHaveBeenCalledWith('ETH', [

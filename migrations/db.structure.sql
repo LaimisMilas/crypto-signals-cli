@@ -50,7 +50,10 @@ create table if not exists patterns_1m
 (
     symbol    text   not null,
     open_time bigint not null,
-    data      jsonb  not null,
+    bullish_engulfing boolean not null default false,
+    bearish_engulfing boolean not null default false,
+    hammer boolean not null default false,
+    shooting_star boolean not null default false,
     primary key (symbol, open_time)
 );
 

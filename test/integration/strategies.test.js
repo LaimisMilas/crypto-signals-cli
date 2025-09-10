@@ -22,14 +22,32 @@ describe('signals generation and backtest integration', () => {
   test('SidewaysReversal generates signals and backtest produces trades', async () => {
     queryMock
       .mockResolvedValueOnce([
-        { open_time: 1, data: { hhll: { hh: false, ll: false } } },
-        { open_time: 2, data: { hhll: { hh: true, ll: false } } },
-        { open_time: 3, data: { hhll: { hh: false, ll: true } } },
+        { open_time: 1, data: { trend: 'sideways', rsi: 50 }, close: 0 },
+        { open_time: 2, data: { trend: 'sideways', rsi: 20 }, close: 0 },
+        { open_time: 3, data: { trend: 'up', rsi: 80 }, close: 0 },
       ])
       .mockResolvedValueOnce([
-        { open_time: 1, data: {} },
-        { open_time: 2, data: {} },
-        { open_time: 3, data: {} },
+        {
+          open_time: 1,
+          bullish_engulfing: false,
+          bearish_engulfing: false,
+          hammer: false,
+          shooting_star: false,
+        },
+        {
+          open_time: 2,
+          bullish_engulfing: true,
+          bearish_engulfing: false,
+          hammer: false,
+          shooting_star: false,
+        },
+        {
+          open_time: 3,
+          bullish_engulfing: false,
+          bearish_engulfing: false,
+          hammer: false,
+          shooting_star: false,
+        },
       ]);
 
     await signalsGenerate({ symbol: 'BTC', interval: '1m', strategy: 'SidewaysReversal' });
@@ -65,14 +83,32 @@ describe('signals generation and backtest integration', () => {
   test('BBRevert generates signals and backtest produces trades', async () => {
     queryMock
       .mockResolvedValueOnce([
-        { open_time: 1, data: { price: 100, bbands: { lower: 90, upper: 110 } } },
-        { open_time: 2, data: { price: 80, bbands: { lower: 90, upper: 110 } } },
-        { open_time: 3, data: { price: 120, bbands: { lower: 90, upper: 110 } } },
+        { open_time: 1, data: { price: 100, bbands: { lower: 90, upper: 110 } }, close: 100 },
+        { open_time: 2, data: { price: 80, bbands: { lower: 90, upper: 110 } }, close: 80 },
+        { open_time: 3, data: { price: 120, bbands: { lower: 90, upper: 110 } }, close: 120 },
       ])
       .mockResolvedValueOnce([
-        { open_time: 1, data: {} },
-        { open_time: 2, data: {} },
-        { open_time: 3, data: {} },
+        {
+          open_time: 1,
+          bullish_engulfing: false,
+          bearish_engulfing: false,
+          hammer: false,
+          shooting_star: false,
+        },
+        {
+          open_time: 2,
+          bullish_engulfing: false,
+          bearish_engulfing: false,
+          hammer: false,
+          shooting_star: false,
+        },
+        {
+          open_time: 3,
+          bullish_engulfing: false,
+          bearish_engulfing: false,
+          hammer: false,
+          shooting_star: false,
+        },
       ]);
 
     await signalsGenerate({ symbol: 'ETH', interval: '1m', strategy: 'BBRevert' });

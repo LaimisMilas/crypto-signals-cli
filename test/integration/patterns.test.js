@@ -2,7 +2,8 @@ import { jest } from '@jest/globals';
 
 const candles = [
   { open_time: 1, open: 10, high: 12, low: 8, close: 8 },
-  { open_time: 2, open: 7, high: 12, low: 6, close: 11 }
+  { open_time: 2, open: 7, high: 12, low: 6, close: 11 },
+  { open_time: 3, open: 10, high: 11, low: 9, close: 10 },
 ];
 
 jest.unstable_mockModule('../../src/storage/db.js', () => ({
@@ -22,7 +23,7 @@ test('detect patterns and write to db', async () => {
   const insertCalls = db.query.mock.calls.filter((c) =>
     c[0].includes('insert into patterns_1m')
   );
-  expect(insertCalls.length).toBeGreaterThan(0);
-  const data = insertCalls[0][1][2];
-  expect(data.bullishEngulfing).toBe(true);
+  expect(insertCalls).toHaveLength(2);
+  const callNoPattern = insertCalls.find((c) => c[1][1] === 3);
+  expect(callNoPattern[1].slice(2)).toEqual([false, false, false, false]);
 });

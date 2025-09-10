@@ -5,8 +5,20 @@ const indicators = [
   { open_time: 2, data: { bbands: { lower: 100, upper: 110 } }, close: 120 }
 ];
 const patterns = [
-  { open_time: 1, data: {} },
-  { open_time: 2, data: {} }
+  {
+    open_time: 1,
+    bullish_engulfing: false,
+    bearish_engulfing: false,
+    hammer: false,
+    shooting_star: false,
+  },
+  {
+    open_time: 2,
+    bullish_engulfing: false,
+    bearish_engulfing: false,
+    hammer: false,
+    shooting_star: false,
+  },
 ];
 
 jest.unstable_mockModule('../../src/storage/db.js', () => ({

@@ -40,10 +40,10 @@ create table if not exists patterns_1m (
   id bigserial primary key,
   symbol text,
   ts timestamptz,
-  bullish_engulfing boolean,
-  bearish_engulfing boolean,
-  hammer boolean,
-  shooting_star boolean,
+  bullish_engulfing boolean not null default false,
+  bearish_engulfing boolean not null default false,
+  hammer boolean not null default false,
+  shooting_star boolean not null default false,
   unique(symbol, ts)
 );
 
