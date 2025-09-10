@@ -15,8 +15,11 @@ export async function detectPatterns({
     [symbol]
   );
 
+  const rows = [];
+
   if (candles.length > 0) {
-    await upsertPatterns(symbol, candles[0].open_time, {
+    rows.push({
+      openTime: candles[0].open_time,
       bullishEngulfing: false,
       bearishEngulfing: false,
       hammer: false,
@@ -27,12 +30,17 @@ export async function detectPatterns({
   for (let i = 1; i < candles.length; i++) {
     const prev = candles[i - 1];
     const curr = candles[i];
-    await upsertPatterns(symbol, curr.open_time, {
+    rows.push({
+      openTime: curr.open_time,
       bullishEngulfing: bullishEngulfing(prev, curr),
       bearishEngulfing: bearishEngulfing(prev, curr),
       hammer: hammer(curr, hammerOptions),
       shootingStar: shootingStar(curr, starOptions),
     });
+  }
+
+  if (rows.length > 0) {
+    await upsertPatterns(symbol, rows);
   }
 
   logger.info('detect patterns');

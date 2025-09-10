@@ -6,13 +6,17 @@ const candles = [
   { open_time: 3, open: 10, high: 11, low: 9, close: 10 },
 ];
 
+const query = jest.fn(async (sql) => {
+  if (sql.includes('from candles_1m')) {
+    return candles;
+  }
+  return [];
+});
+const withTransaction = jest.fn(async (fn) => fn({ query }));
+
 jest.unstable_mockModule('../../src/storage/db.js', () => ({
-  query: jest.fn(async (sql) => {
-    if (sql.includes('from candles_1m')) {
-      return candles;
-    }
-    return [];
-  })
+  query,
+  withTransaction,
 }));
 
 const db = await import('../../src/storage/db.js');
@@ -20,7 +24,7 @@ const { detectPatterns } = await import('../../src/cli/patterns.js');
 
 test('detect patterns and write to db', async () => {
   await detectPatterns({ symbol: 'BTCUSDT' });
-  const insertCalls = db.query.mock.calls.filter((c) =>
+  const insertCalls = query.mock.calls.filter((c) =>
     c[0].includes('insert into patterns_1m')
   );
   expect(insertCalls).toHaveLength(candles.length);

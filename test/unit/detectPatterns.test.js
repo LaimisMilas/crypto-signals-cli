@@ -28,10 +28,11 @@ test('detectPatterns uses custom multipliers', async () => {
     hammer: { lowerMultiplier: 1.5 },
     star: { upperMultiplier: 1.3 },
   });
+  expect(upsertPatternsMock).toHaveBeenCalledTimes(1);
+  const rows = upsertPatternsMock.mock.calls[0][1];
+  const hammerRow = rows.find((r) => r.openTime === 2);
+  expect(hammerRow).toMatchObject({ hammer: true });
 
-  const hammerCall = upsertPatternsMock.mock.calls.find((c) => c[1] === 2);
-  expect(hammerCall[2]).toMatchObject({ hammer: true });
-
-  const starCall = upsertPatternsMock.mock.calls.find((c) => c[1] === 3);
-  expect(starCall[2]).toMatchObject({ shootingStar: true });
+  const starRow = rows.find((r) => r.openTime === 3);
+  expect(starRow).toMatchObject({ shootingStar: true });
 });
