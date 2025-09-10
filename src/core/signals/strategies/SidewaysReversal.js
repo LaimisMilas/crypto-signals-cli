@@ -1,9 +1,15 @@
-const strategy = {
+export default {
   name: 'SidewaysReversal',
-  rules: [
-    { when: i => i.trend === 'flat' && i.hhll.hh, signal: 'buy' },
-    { when: i => i.trend === 'flat' && i.hhll.ll, signal: 'sell' }
-  ]
+  entry(ind) {
+    if (ind.hhll?.hh && !ind.hhll?.ll) {
+      return 'buy';
+    }
+    return null;
+  },
+  exit(ind) {
+    if (ind.hhll?.ll) {
+      return 'sell';
+    }
+    return null;
+  }
 };
-
-export default strategy;

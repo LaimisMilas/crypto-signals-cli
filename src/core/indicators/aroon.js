@@ -1,5 +1,4 @@
-export function aroon25(highs, lows) {
-  const period = 25;
+export function aroon(highs, lows, period = 25) {
   if (highs.length < period) return null;
   const sliceH = highs.slice(-period);
   const sliceL = lows.slice(-period);

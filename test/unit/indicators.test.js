@@ -1,12 +1,12 @@
-import { rsi14 } from '../src/core/indicators/rsi14.js';
-import { trend } from '../src/core/indicators/trend.js';
-import { hhll } from '../src/core/indicators/hhll.js';
+import { rsi } from '../../src/core/indicators/rsi.js';
+import { trend } from '../../src/core/indicators/trend.js';
+import { hhll } from '../../src/core/indicators/hhll.js';
 
-test('rsi14 zigzag ~50', () => {
+test('rsi zigzag ~50', () => {
   const closes = Array.from({ length: 30 }, (_, i) => (i % 2 === 0 ? 1 : 2));
-  const rsi = rsi14(closes);
-  expect(rsi).toBeGreaterThan(40);
-  expect(rsi).toBeLessThan(60);
+  const rsiVal = rsi(closes);
+  expect(rsiVal).toBeGreaterThan(40);
+  expect(rsiVal).toBeLessThan(60);
 });
 
 test('trend up/down', () => {
