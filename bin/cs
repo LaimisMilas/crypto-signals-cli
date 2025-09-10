@@ -27,8 +27,16 @@ program
   .option('--resume')
   .option('--server-time')
   .action(fetchKlines);
-program.command('compute:indicators').action(computeIndicators);
-program.command('detect:patterns').action(detectPatterns);
+program
+  .command('compute:indicators')
+  .requiredOption('--symbol <symbol>')
+  .requiredOption('--interval <interval>')
+  .action((opts) => computeIndicators(opts));
+program
+  .command('detect:patterns')
+  .requiredOption('--symbol <symbol>')
+  .requiredOption('--interval <interval>')
+  .action((opts) => detectPatterns(opts));
 program
   .command('resample')
   .requiredOption('--from <interval>')
