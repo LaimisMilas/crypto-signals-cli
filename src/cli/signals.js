@@ -15,7 +15,9 @@ export async function signalsGenerate(opts) {
   if (!strategy) throw new Error(`Unknown strategy: ${strategyName}`);
 
   const indicators = await query(
-    `select open_time, data from indicators_${interval} where symbol=$1 order by open_time`,
+    `select i.open_time, c.close, i.data from indicators_${interval} i
+     join candles_${interval} c on c.symbol = i.symbol and c.open_time = i.open_time
+     where i.symbol=$1 order by i.open_time`,
     [symbol]
   );
   const patterns = await query(
@@ -26,7 +28,11 @@ export async function signalsGenerate(opts) {
 
   const signals = [];
   for (const row of indicators) {
-    const ind = { ...row.data, ...(patternMap.get(row.open_time) || {}) };
+    const ind = {
+      close: Number(row.close),
+      ...row.data,
+      ...(patternMap.get(row.open_time) || {})
+    };
     const sig = runStrategy(strategy, ind);
     if (sig) signals.push({ openTime: row.open_time, signal: sig });
   }
