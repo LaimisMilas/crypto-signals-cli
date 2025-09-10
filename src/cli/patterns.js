@@ -14,6 +14,15 @@ export async function detectPatterns({
     [symbol]
   );
 
+  if (candles.length > 0) {
+    await upsertPatterns(symbol, candles[0].open_time, {
+      bullishEngulfing: false,
+      bearishEngulfing: false,
+      hammer: false,
+      shootingStar: false,
+    });
+  }
+
   for (let i = 1; i < candles.length; i++) {
     const prev = candles[i - 1];
     const curr = candles[i];
