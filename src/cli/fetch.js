@@ -1,4 +1,5 @@
 import { fetchKlinesRange } from '../core/binance.js';
+import logger from '../utils/logger.js';
 
 export async function fetchKlines(opts) {
   const { symbol, from, to, interval = '1m', limit = 1000, resume } = opts;
@@ -12,5 +13,5 @@ export async function fetchKlines(opts) {
     limit: Number(limit),
     resume
   });
-  console.log(`fetched ${count} candles`);
+  logger.info(`fetched ${count} candles`);
 }

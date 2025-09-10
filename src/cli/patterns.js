@@ -3,6 +3,7 @@ import { bullishEngulfing, bearishEngulfing } from '../core/patterns/engulfing.j
 import { hammer } from '../core/patterns/hammer.js';
 import { shootingStar } from '../core/patterns/star.js';
 import { upsertPatterns } from '../storage/repos/patterns.js';
+import logger from '../utils/logger.js';
 
 export async function detectPatterns({
   symbol,
@@ -34,5 +35,5 @@ export async function detectPatterns({
     });
   }
 
-  console.log('detect patterns');
+  logger.info('detect patterns');
 }
