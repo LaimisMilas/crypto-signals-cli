@@ -20,8 +20,8 @@ export async function detectPatterns({
     await upsertPatterns(symbol, curr.open_time, {
       bullishEngulfing: bullishEngulfing(prev, curr),
       bearishEngulfing: bearishEngulfing(prev, curr),
-      hammer: hammer(curr),
-      shootingStar: shootingStar(curr),
+      hammer: hammer(curr, hammerOptions),
+      shootingStar: shootingStar(curr, starOptions),
     });
   }
 
