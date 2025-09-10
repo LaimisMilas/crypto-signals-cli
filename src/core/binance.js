@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 import config from '../config/index.js';
 import { query } from '../storage/db.js';
 import { insertCandles } from '../storage/repos/candles.js';
-import { getJobRunAt, setJobRunAt } from '../storage/repos/jobs.js';
+import { retry } from '../utils/retry.js';
 
 const BASE = config.binance.baseUrl;
 let lastCall = 0;
@@ -51,14 +51,24 @@ export async function fetchServerTime() {
 }
 
 export async function fetchKlines({ symbol, interval, startMs, endMs, limit = 1000 }) {
-  await rateLimit();
   const url = new URL('/api/v3/klines', BASE);
   url.searchParams.set('symbol', symbol);
   url.searchParams.set('interval', interval);
   if (startMs) url.searchParams.set('startTime', startMs);
   if (endMs) url.searchParams.set('endTime', endMs);
   url.searchParams.set('limit', limit);
-  const res = await fetchJson(url);
+  const res = await retry(async () => {
+    await rateLimit();
+    const r = await fetch(url);
+    if (r.status === 429) {
+      const err = new Error('binance rate limit');
+      const ra = r.headers?.get?.('retry-after');
+      if (ra) err.retryAfter = Number(ra) * 1000;
+      throw err;
+    }
+    if (!r.ok) throw new Error('binance error');
+    return r;
+  });
   const data = await res.json();
   return data.map(k => ({
     openTime: k[0],
