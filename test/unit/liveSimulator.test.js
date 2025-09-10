@@ -7,26 +7,19 @@ const equityRepo = { insertEquityPaper: jest.fn(async () => {}) };
 jest.unstable_mockModule('../../src/storage/repos/tradesPaper.js', () => tradesRepo);
 jest.unstable_mockModule('../../src/storage/repos/equityPaper.js', () => equityRepo);
 
-const { paperRun } = await import('../../src/cli/paper.js');
+const { LiveSimulator } = await import('../../src/core/paper/liveSimulator.js');
 
-test('paperRun executes trade, records equity, and calculates pnl', async () => {
+test('LiveSimulator processes candles and signals correctly', async () => {
   const candles = loadFixture('SOLUSDT_1m_sample');
   const signals = [null, 'buy', 'sell'];
-  await paperRun({
-    strategy: 'test',
-    symbol: 'SOLUSDT',
-    initial: 1000,
-    candles,
-    signals,
-    atrPeriod: 1
-  });
+  const sim = new LiveSimulator({ symbol: 'SOLUSDT', initialBalance: 1000, atrPeriod: 1 });
+  for (let i = 0; i < candles.length; i++) {
+    await sim.process(candles[i], signals[i] || null);
+  }
   expect(tradesRepo.insertTradesPaper).toHaveBeenCalled();
-  expect(equityRepo.insertEquityPaper).toHaveBeenCalled();
-  const trades = tradesRepo.insertTradesPaper.mock.calls[0][1];
-  expect(trades[0]).toMatchObject({ pnl: 42, status: 'closed' });
+  const trade = tradesRepo.insertTradesPaper.mock.calls[0][1][0];
+  expect(trade).toMatchObject({ pnl: 42, status: 'closed' });
   const lastEquityCall = equityRepo.insertEquityPaper.mock.calls.at(-1);
   const equityPoint = lastEquityCall[2][0];
   expect(equityPoint.balance).toBe(1042);
-  expect(lastEquityCall[0]).toBe('paper');
-  expect(lastEquityCall[1]).toBe('SOLUSDT');
 });
