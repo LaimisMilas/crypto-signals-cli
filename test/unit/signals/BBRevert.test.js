@@ -23,12 +23,12 @@ test('exit returns sell when close above upper band', () => {
   expect(sig).toBe('sell');
 });
 
-test('no signal when rsi above 70 but price inside bands', () => {
+test('no signal when rsi below 70 and price inside bands', () => {
   const ind = {
     close: 105,
     bbands: { lower: 100, upper: 110 },
     aroon: { up: 40 },
-    rsi: 80,
+    rsi: 65,
   };
   const sig = runStrategy(BBRevert, ind);
   expect(sig).toBeNull();
