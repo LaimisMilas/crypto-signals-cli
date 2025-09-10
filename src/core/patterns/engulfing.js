@@ -9,10 +9,11 @@ export function bullishEngulfing(prev, curr) {
 }
 
 export function bearishEngulfing(c1, c2) {
-  return (
-    c1.close > c1.open &&
-    c2.close < c2.open &&
-    c2.open >= c1.close &&
-    c2.close <= c1.open
-  );
+  const prevBullish = c1.close > c1.open;
+  const currBearish = c2.close < c2.open;
+  const prevLow = Math.min(c1.open, c1.close);
+  const prevHigh = Math.max(c1.open, c1.close);
+  const currLow = Math.min(c2.open, c2.close);
+  const currHigh = Math.max(c2.open, c2.close);
+  return prevBullish && currBearish && currLow <= prevLow && currHigh >= prevHigh;
 }

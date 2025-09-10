@@ -14,6 +14,18 @@ test('bearish engulfing', () => {
   expect(bearishEngulfing(c1, c2)).toBe(true);
 });
 
+test('bullish engulfing with wicks', () => {
+  const c1 = { open: 10, close: 8, high: 11, low: 7 };
+  const c2 = { open: 7, close: 11, high: 12, low: 6 };
+  expect(bullishEngulfing(c1, c2)).toBe(true);
+});
+
+test('bearish engulfing with wicks', () => {
+  const c1 = { open: 8, close: 10, high: 11, low: 7 };
+  const c2 = { open: 11, close: 7, high: 12, low: 6 };
+  expect(bearishEngulfing(c1, c2)).toBe(true);
+});
+
 test('hammer', () => {
   const c = { open: 10, close: 11, high: 12, low: 8 };
   expect(hammer(c)).toBe(true);
