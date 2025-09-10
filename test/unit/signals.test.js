@@ -20,8 +20,8 @@ beforeEach(() => {
 test('generates signals for SidewaysReversal strategy', async () => {
   queryMock
     .mockResolvedValueOnce([
-      { open_time: 1, data: { hhll: { hh: true, ll: false } }, close: 0 },
-      { open_time: 2, data: { hhll: { hh: false, ll: true } }, close: 0 },
+      { open_time: 1, data: { trend: 'range', rsi: 20 }, close: 0 },
+      { open_time: 2, data: { trend: 'range', rsi: 50 }, close: 0 },
     ])
     .mockResolvedValueOnce([
       { open_time: 1, data: { bullishEngulfing: true } },
