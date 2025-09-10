@@ -19,7 +19,8 @@ jest.unstable_mockModule('../../src/core/binance.js', async () => {
       if (!res.ok) throw new Error('binance error');
       const data = await res.json();
       return data.serverTime;
-    }
+    },
+    getServerTime: jest.fn(() => Date.now())
   };
 });
 

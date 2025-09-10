@@ -1,4 +1,4 @@
-import { fetchKlinesRange, fetchServerTime } from '../core/binance.js';
+import { fetchKlinesRange, fetchServerTime, getServerTime } from '../core/binance.js';
 import logger from '../utils/logger.js';
 
 export async function fetchKlines(opts) {
