@@ -1,9 +1,16 @@
-import { fetchKlinesResume } from '../core/binance.js';
-import { insertCandles } from '../storage/repos/candles.js';
+import { fetchKlinesRange } from '../core/binance.js';
 
 export async function fetchKlines(opts) {
-  const { symbol } = opts;
-  const data = await fetchKlinesResume({ symbol });
-  await insertCandles(symbol, data);
-  console.log(`fetched ${data.length} candles`);
+  const { symbol, from, to, interval = '1m', limit = 1000, resume } = opts;
+  const startMs = from ? Number(from) : undefined;
+  const endMs = to ? Number(to) : undefined;
+  const count = await fetchKlinesRange({
+    symbol,
+    interval,
+    startMs,
+    endMs,
+    limit: Number(limit),
+    resume
+  });
+  console.log(`fetched ${count} candles`);
 }

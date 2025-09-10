@@ -14,7 +14,15 @@ program
 
 program.command('db:init').action(dbInit);
 program.command('db:migrate').action(dbMigrate);
-program.command('fetch:klines').requiredOption('--symbol <symbol>').action(fetchKlines);
+program
+  .command('fetch:klines')
+  .requiredOption('--symbol <symbol>')
+  .option('--from <ms>')
+  .option('--to <ms>')
+  .option('--interval <interval>', '1m')
+  .option('--limit <number>', '1000')
+  .option('--resume')
+  .action(fetchKlines);
 program.command('compute:indicators').action(computeIndicators);
 program.command('detect:patterns').action(detectPatterns);
 program.command('signals:generate').action(signalsGenerate);
