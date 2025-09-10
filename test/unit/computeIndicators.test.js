@@ -20,12 +20,15 @@ const candles = highsArr.map((h, i) => ({
 
 const upserts = [];
 
+const query = jest.fn(async (sql, params) => {
+  if (/select/i.test(sql)) return candles;
+  upserts.push({ sql, params });
+  return [];
+});
+const withTransaction = jest.fn(async (fn) => fn({ query }));
 jest.unstable_mockModule('../../src/storage/db.js', () => ({
-  query: jest.fn(async (sql, params) => {
-    if (/select/i.test(sql)) return candles;
-    upserts.push({ sql, params });
-    return [];
-  })
+  query,
+  withTransaction,
 }));
 
 const { computeIndicators } = await import('../../src/cli/compute.js');

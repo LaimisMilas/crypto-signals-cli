@@ -1,7 +1,11 @@
 import { jest } from '@jest/globals';
 
+const query = jest.fn(async () => []);
+const withTransaction = jest.fn(async (fn) => fn({ query }));
+
 jest.unstable_mockModule('../../src/storage/db.js', () => ({
-  query: jest.fn(async () => [])
+  query,
+  withTransaction,
 }));
 
 jest.unstable_mockModule('../../src/core/binance.js', () => ({
@@ -10,10 +14,9 @@ jest.unstable_mockModule('../../src/core/binance.js', () => ({
 
 const { fetchKlines } = await import('../../src/core/binance.js');
 const { insertCandles } = await import('../../src/storage/repos/candles.js');
-const db = await import('../../src/storage/db.js');
 
 test('fetch and insert', async () => {
   const data = await fetchKlines({ symbol: 'BTCUSDT', interval: '1m', limit: 1 });
-  await insertCandles('BTCUSDT', '1m', data);
-  expect(db.query).toHaveBeenCalled();
+  await insertCandles('BTCUSDT', data, '1m');
+  expect(query).toHaveBeenCalled();
 });

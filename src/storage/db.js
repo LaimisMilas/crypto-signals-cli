@@ -13,4 +13,19 @@ export async function query(sql, params) {
   return rows;
 }
 
-export default { query };
+export async function withTransaction(fn) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const res = await fn(client);
+    await client.query('COMMIT');
+    return res;
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+export default { query, withTransaction };
