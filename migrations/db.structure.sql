@@ -35,6 +35,21 @@ create table if not exists candles_1m
 alter table candles_1m
     owner to laimonas;
 
+create table if not exists candles_1h
+(
+    symbol    text   not null,
+    open_time bigint not null,
+    open      numeric,
+    high      numeric,
+    low       numeric,
+    close     numeric,
+    volume    numeric,
+    primary key (symbol, open_time)
+);
+
+alter table candles_1h
+    owner to laimonas;
+
 create table if not exists indicators_1m
 (
     symbol    text   not null,
@@ -44,6 +59,17 @@ create table if not exists indicators_1m
 );
 
 alter table indicators_1m
+    owner to laimonas;
+
+create table if not exists indicators_1h
+(
+    symbol    text   not null,
+    open_time bigint not null,
+    data      jsonb  not null,
+    primary key (symbol, open_time)
+);
+
+alter table indicators_1h
     owner to laimonas;
 
 create table if not exists patterns_1m
@@ -58,6 +84,20 @@ create table if not exists patterns_1m
 );
 
 alter table patterns_1m
+    owner to laimonas;
+
+create table if not exists patterns_1h
+(
+    symbol    text   not null,
+    open_time bigint not null,
+    bullish_engulfing boolean not null default false,
+    bearish_engulfing boolean not null default false,
+    hammer boolean not null default false,
+    shooting_star boolean not null default false,
+    primary key (symbol, open_time)
+);
+
+alter table patterns_1h
     owner to laimonas;
 
 create table if not exists signals

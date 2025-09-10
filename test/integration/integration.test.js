@@ -14,6 +14,6 @@ const db = await import('../../src/storage/db.js');
 
 test('fetch and insert', async () => {
   const data = await fetchKlines({ symbol: 'BTCUSDT', interval: '1m', limit: 1 });
-  await insertCandles('BTCUSDT', data);
+  await insertCandles('BTCUSDT', '1m', data);
   expect(db.query).toHaveBeenCalled();
 });
