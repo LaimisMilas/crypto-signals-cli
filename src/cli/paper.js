@@ -18,4 +18,11 @@ export async function paperRun(opts) {
   return { trades, equity };
 }
 
-export default { paperRun };
+export async function paperEquitySnapshot(opts) {
+  const { equity, source } = opts;
+  const ts = Date.now();
+  await insertEquityPaper(source, null, [{ time: ts, balance: Number(equity) }]);
+  logger.info(`equity snapshot recorded for ${source}`);
+}
+
+export default { paperRun, paperEquitySnapshot };
