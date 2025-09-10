@@ -4,7 +4,7 @@ import BBRevert from '../../../src/core/signals/strategies/BBRevert.js';
 test('entry returns buy when conditions met', () => {
   const ind = {
     close: 90,
-    bollinger: { lower: 100, upper: 110 },
+    bbands: { lower: 100, upper: 110 },
     aroon: { up: 60 },
     rsi: 50,
   };
@@ -15,7 +15,7 @@ test('entry returns buy when conditions met', () => {
 test('exit returns sell when close above upper band', () => {
   const ind = {
     close: 120,
-    bollinger: { lower: 100, upper: 110 },
+    bbands: { lower: 100, upper: 110 },
     aroon: { up: 40 },
     rsi: 50,
   };
@@ -26,7 +26,7 @@ test('exit returns sell when close above upper band', () => {
 test('exit returns sell when rsi above 70', () => {
   const ind = {
     close: 105,
-    bollinger: { lower: 100, upper: 110 },
+    bbands: { lower: 100, upper: 110 },
     aroon: { up: 40 },
     rsi: 80,
   };

@@ -22,13 +22,13 @@ describe('signals generation and backtest integration', () => {
   test('SidewaysReversal generates signals and backtest produces trades', async () => {
     queryMock
       .mockResolvedValueOnce([
-        { open_time: 1, data: { hhll: { hh: false, ll: false } } },
-        { open_time: 2, data: { hhll: { hh: true, ll: false } } },
-        { open_time: 3, data: { hhll: { hh: false, ll: true } } },
+        { open_time: 1, data: { trend: 'range', rsi: 40 }, close: 100 },
+        { open_time: 2, data: { trend: 'range', rsi: 20 }, close: 100 },
+        { open_time: 3, data: { trend: 'up', rsi: 40 }, close: 100 },
       ])
       .mockResolvedValueOnce([
         { open_time: 1, data: {} },
-        { open_time: 2, data: {} },
+        { open_time: 2, data: { bullishEngulfing: true } },
         { open_time: 3, data: {} },
       ]);
 
@@ -65,9 +65,9 @@ describe('signals generation and backtest integration', () => {
   test('BBRevert generates signals and backtest produces trades', async () => {
     queryMock
       .mockResolvedValueOnce([
-        { open_time: 1, data: { price: 100, bbands: { lower: 90, upper: 110 } } },
-        { open_time: 2, data: { price: 80, bbands: { lower: 90, upper: 110 } } },
-        { open_time: 3, data: { price: 120, bbands: { lower: 90, upper: 110 } } },
+        { open_time: 1, data: { bbands: { lower: 90, upper: 110 } }, close: 100 },
+        { open_time: 2, data: { bbands: { lower: 90, upper: 110 } }, close: 80 },
+        { open_time: 3, data: { bbands: { lower: 90, upper: 110 } }, close: 120 },
       ])
       .mockResolvedValueOnce([
         { open_time: 1, data: {} },

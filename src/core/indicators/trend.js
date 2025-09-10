@@ -1,8 +1,6 @@
-export function trend(closes) {
-  if (closes.length < 2) return 'flat';
-  const first = closes[0];
-  const last = closes[closes.length - 1];
-  if (last > first) return 'up';
-  if (last < first) return 'down';
-  return 'flat';
+export function trend(close, bbMid, aroonUp, aroonDown) {
+  if (bbMid == null || aroonUp == null || aroonDown == null) return 'range';
+  if (close > bbMid && aroonUp > aroonDown + 20) return 'up';
+  if (close < bbMid && aroonDown > aroonUp + 20) return 'down';
+  return 'range';
 }
