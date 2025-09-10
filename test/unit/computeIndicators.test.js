@@ -6,12 +6,15 @@ import { bollinger } from '../../src/core/indicators/bollinger.js';
 import { trend } from '../../src/core/indicators/trend.js';
 import { hhll } from '../../src/core/indicators/hhll.js';
 
-const candles = Array.from({ length: 30 }, (_, i) => ({
+const highsArr = [5,6,7,9,7,6,5,7,8,10,8,7,6,8,11,9,8,10,12,11,13,14,15,16,17,18,19,20,21,22];
+const lowsArr =  [1,2,3,4,3,2,1,3,4,5,4,3,2,4,5,6,5,6,7,6,8,9,10,11,12,13,14,15,16,17];
+const closesArr = highsArr.map((h, i) => (h + lowsArr[i]) / 2);
+const candles = highsArr.map((h, i) => ({
   open_time: i + 1,
-  open: i + 1,
-  high: i + 2,
-  low: i,
-  close: i + 1,
+  open: closesArr[i],
+  high: h,
+  low: lowsArr[i],
+  close: closesArr[i],
   volume: 1,
 }));
 

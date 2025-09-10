@@ -29,7 +29,7 @@ describe('signals generation and backtest integration', () => {
       .mockResolvedValueOnce([
         { open_time: 1, data: {} },
         { open_time: 2, data: { bullishEngulfing: true } },
-        { open_time: 3, data: {} },
+        { open_time: 3, data: { bearishEngulfing: true } },
       ]);
 
     await signalsGenerate({ symbol: 'BTC', interval: '1m', strategy: 'SidewaysReversal' });
