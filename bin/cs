@@ -18,6 +18,13 @@ program.command('fetch:klines').requiredOption('--symbol <symbol>').action(fetch
 program.command('compute:indicators').action(computeIndicators);
 program.command('detect:patterns').action(detectPatterns);
 program.command('signals:generate').action(signalsGenerate);
-program.command('backtest:run').action(backtestRun);
+program
+  .command('backtest:run')
+  .requiredOption('--strategy <strategy>')
+  .requiredOption('--symbol <symbol>')
+  .requiredOption('--from <from>')
+  .requiredOption('--to <to>')
+  .requiredOption('--initial <initial>')
+  .action(backtestRun);
 
 program.parseAsync(process.argv);
