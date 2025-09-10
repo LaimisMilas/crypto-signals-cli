@@ -7,6 +7,7 @@ import { detectPatterns } from '../src/cli/patterns.js';
 import { signalsGenerate } from '../src/cli/signals.js';
 import { backtestRun } from '../src/cli/backtest.js';
 import { paperEquitySnapshot } from '../src/cli/paper.js';
+import { resampleCandles } from '../src/cli/resample.js';
 
 const program = new Command();
 program
@@ -28,6 +29,12 @@ program
   .action(fetchKlines);
 program.command('compute:indicators').action(computeIndicators);
 program.command('detect:patterns').action(detectPatterns);
+program
+  .command('resample')
+  .requiredOption('--from <interval>')
+  .requiredOption('--to <interval>')
+  .requiredOption('--symbol <symbol>')
+  .action(resampleCandles);
 program
   .command('backtest:run')
   .requiredOption('--strategy <strategy>')
