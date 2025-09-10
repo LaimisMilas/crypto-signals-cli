@@ -1,12 +1,20 @@
 import { jest } from '@jest/globals';
 
+let serverTimeValue = 0;
+
 const fetchMock = jest.fn(async url => {
   const u = new URL(url);
+  if (u.pathname.endsWith('/time')) {
+    return { ok: true, json: async () => ({ serverTime: serverTimeValue }) };
+  }
   const start = Number(u.searchParams.get('startTime') || 0);
   const end = Number(u.searchParams.get('endTime'));
   const limit = Number(u.searchParams.get('limit'));
+  const interval = u.searchParams.get('interval');
+  const stepMap = { '1m': 60_000, '1h': 3_600_000, '1d': 86_400_000 };
+  const step = stepMap[interval];
   const candles = [];
-  for (let t = start; (!end || t < end) && candles.length < limit; t += 60_000) {
+  for (let t = start; (!end || t < end) && candles.length < limit; t += step) {
     candles.push([t, '1', '1', '1', '1', '1']);
   }
   return { ok: true, json: async () => candles };
@@ -27,7 +35,7 @@ jest.unstable_mockModule('../../src/storage/repos/jobs.js', () => ({
 const db = { query: jest.fn(async () => []) };
 jest.unstable_mockModule('../../src/storage/db.js', () => db);
 
-const { fetchKlinesRange } = await import('../../src/core/binance.js');
+const { fetchKlinesRange, syncServerTime, getServerTime } = await import('../../src/core/binance.js');
 
 test('fetch range in batches', async () => {
   jobStore.ts = undefined;
@@ -48,12 +56,10 @@ test('fetch range in batches', async () => {
   expect(insertMock.mock.calls[0][1]).toBe('1m');
 });
 
-test('resume from last stored candle', async () => {
-  jobStore.ts = undefined;
+test('resume from job entry', async () => {
   fetchMock.mockClear();
   insertMock.mockClear();
-  getJobRunAtMock.mockClear();
-  setJobRunAtMock.mockClear();
+  db.query.mockReset();
   db.query.mockResolvedValueOnce([{ m: 60_000 }]);
   await fetchKlinesRange({
     symbol: 'BTCUSDT',
@@ -63,9 +69,8 @@ test('resume from last stored candle', async () => {
   });
   const url = new URL(fetchMock.mock.calls[0][0]);
   expect(url.searchParams.get('startTime')).toBe('120000');
-  expect(db.query).toHaveBeenCalled();
-  expect(db.query.mock.calls[0][0]).toContain('candles_1m');
-});
+  expect(db.query).toHaveBeenCalledTimes(1);
+  expect(db.query.mock.calls[0][0]).toMatch(/jobs/);
 
 test('resume after crash using job progress', async () => {
   jobStore.ts = undefined;
@@ -105,3 +110,43 @@ test('resume after crash using job progress', async () => {
   expect(url.searchParams.get('startTime')).toBe('60000000');
 });
 
+test('supports multiple intervals', async () => {
+  fetchMock.mockClear();
+  insertMock.mockClear();
+  await fetchKlinesRange({
+    symbol: 'BTCUSDT',
+    interval: '1h',
+    startMs: 0,
+    endMs: 3 * 3_600_000,
+    limit: 1000
+  });
+  const url = new URL(fetchMock.mock.calls[0][0]);
+  expect(url.searchParams.get('interval')).toBe('1h');
+  expect(insertMock.mock.calls[0][2]).toBe('1h');
+});
+
+test('syncs server time', async () => {
+  fetchMock.mockClear();
+  serverTimeValue = 1000;
+  const spy = jest.spyOn(Date, 'now').mockReturnValue(500);
+  await syncServerTime();
+  expect(fetchMock.mock.calls[0][0].toString()).toContain('/api/v3/time');
+  expect(getServerTime()).toBe(1000);
+  spy.mockRestore();
+});
+
+test('retries on rate limit and network errors', async () => {
+  fetchMock.mockReset();
+  insertMock.mockClear();
+  fetchMock
+    .mockImplementationOnce(async () => ({ ok: false, status: 429 }))
+    .mockImplementationOnce(async () => { throw new Error('network'); })
+    .mockImplementation(async url => {
+      const u = new URL(url);
+      const start = Number(u.searchParams.get('startTime') || 0);
+      return { ok: true, json: async () => [[start, '1', '1', '1', '1', '1']] };
+    });
+  await fetchKlinesRange({ symbol: 'BTCUSDT', interval: '1m', endMs: 60_000 });
+  expect(fetchMock).toHaveBeenCalledTimes(3);
+  expect(insertMock).toHaveBeenCalledTimes(1);
+});

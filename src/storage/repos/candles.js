@@ -1,6 +1,6 @@
 import { query } from '../db.js';
 
-export async function insertCandles(symbol, interval, candles) {
+export async function insertCandles(symbol, candles, interval = '1m') {
   const table = `candles_${interval}`;
   for (const c of candles) {
     await query(
