@@ -11,4 +11,6 @@ test('inserts row with all pattern flags false', async () => {
     expect.stringContaining('insert into patterns_1m'),
     ['BTC', 1, false, false, false, false]
   );
+  const sql = query.mock.calls[0][0];
+  expect(sql).toMatch(/on conflict \(symbol, open_time\)/);
 });
