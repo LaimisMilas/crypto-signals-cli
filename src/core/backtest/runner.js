@@ -1,5 +1,47 @@
 import { atr } from '../indicators/atr.js';
 
+export function calcWinrate(trades = []) {
+  if (!trades.length) return 0;
+  const wins = trades.filter(t => t.pnl > 0).length;
+  return wins / trades.length;
+}
+
+export function calcProfitFactor(trades = []) {
+  let grossProfit = 0;
+  let grossLoss = 0;
+  for (const t of trades) {
+    if (t.pnl > 0) grossProfit += t.pnl;
+    else if (t.pnl < 0) grossLoss += Math.abs(t.pnl);
+  }
+  return grossLoss ? grossProfit / grossLoss : 0;
+}
+
+export function calcMaxDrawdown(equity = []) {
+  let peak = equity.length ? equity[0].balance : 0;
+  let maxDD = 0;
+  for (const e of equity) {
+    if (e.balance > peak) peak = e.balance;
+    const dd = peak - e.balance;
+    if (dd > maxDD) maxDD = dd;
+  }
+  return maxDD;
+}
+
+export function calcAveragePnL(trades = []) {
+  if (!trades.length) return 0;
+  const total = trades.reduce((sum, t) => sum + t.pnl, 0);
+  return total / trades.length;
+}
+
+export function calculateMetrics(trades, equity) {
+  return {
+    winrate: calcWinrate(trades),
+    profitFactor: calcProfitFactor(trades),
+    maxDrawdown: calcMaxDrawdown(equity),
+    avgPnL: calcAveragePnL(trades),
+  };
+}
+
 /**
  * Run a simple backtest over provided candles and signals.
  * @param {Object} opts
@@ -88,7 +130,8 @@ export async function runBacktest({
     equity.push({ time: c.openTime, balance });
   }
 
-  return { trades, equity };
+  const metrics = calculateMetrics(trades, equity);
+  return { trades, equity, metrics };
 }
 
 export default { runBacktest };
