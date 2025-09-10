@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+import { loadFixture } from '../helpers/fixtures.js';
 
 const queryMock = jest.fn();
 const upsertMock = jest.fn();
@@ -56,11 +57,12 @@ describe('signals generation and backtest integration', () => {
       { openTime: 3, signal: 'sell' },
     ]);
 
-    const candles = [
-      { openTime: 1, high: 110, low: 90, close: 100 },
-      { openTime: 2, high: 120, low: 95, close: 110 },
-      { openTime: 3, high: 130, low: 100, close: 120 },
-    ];
+    const candles = loadFixture('SOLUSDT_1m_sample').map(c => ({
+      openTime: c.openTime,
+      high: c.high,
+      low: c.low,
+      close: c.close,
+    }));
 
     const generated = upsertMock.mock.calls[0][1];
     const signals = candles.map(c => {
@@ -117,11 +119,12 @@ describe('signals generation and backtest integration', () => {
       { openTime: 3, signal: 'sell' },
     ]);
 
-    const candles = [
-      { openTime: 1, high: 110, low: 90, close: 100 },
-      { openTime: 2, high: 100, low: 70, close: 80 },
-      { openTime: 3, high: 130, low: 110, close: 120 },
-    ];
+    const candles = loadFixture('SOLUSDT_1m_sample').map(c => ({
+      openTime: c.openTime,
+      high: c.high,
+      low: c.low,
+      close: c.close,
+    }));
 
     const generated = upsertMock.mock.calls[0][1];
     const signals = candles.map(c => {

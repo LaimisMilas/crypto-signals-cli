@@ -1,6 +1,6 @@
 export async function retry(fn, { retries = 3, factor = 2, minTimeout = 500 } = {}) {
   let attempt = 0;
-  while (true) {
+  for (;;) {
     try {
       return await fn();
     } catch (err) {

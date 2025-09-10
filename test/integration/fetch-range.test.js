@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+import { loadFixture } from '../helpers/fixtures.js';
 
 let serverTimeValue = 0;
 
@@ -200,14 +201,21 @@ test('syncs server time', async () => {
 test('retries on rate limit and network errors', async () => {
   fetchMock.mockReset();
   insertMock.mockClear();
+  const sampleCandles = loadFixture('SOLUSDT_1m_sample').map(c => [
+    c.openTime,
+    String(c.open),
+    String(c.high),
+    String(c.low),
+    String(c.close),
+    String(c.volume)
+  ]);
   fetchMock
     .mockImplementationOnce(async () => ({ ok: false, status: 429 }))
     .mockImplementationOnce(async () => { throw new Error('network'); })
-    .mockImplementation(async url => {
-      const u = new URL(url);
-      const start = Number(u.searchParams.get('startTime') || 0);
-      return { ok: true, json: async () => [[start, '1', '1', '1', '1', '1']] };
-    });
+    .mockImplementation(async () => ({
+      ok: true,
+      json: async () => sampleCandles,
+    }));
   await fetchKlinesRange({ symbol: 'BTCUSDT', interval: '1m', endMs: 60_000 });
   expect(fetchMock).toHaveBeenCalledTimes(3);
   expect(insertMock).toHaveBeenCalledTimes(1);

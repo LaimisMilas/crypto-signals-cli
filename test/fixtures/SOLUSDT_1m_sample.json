@@ -1,0 +1,5 @@
+[
+  { "openTime": 1, "open": 100, "high": 110, "low": 90, "close": 100, "volume": 1000 },
+  { "openTime": 2, "open": 100, "high": 120, "low": 99, "close": 110, "volume": 1100 },
+  { "openTime": 3, "open": 110, "high": 160, "low": 100, "close": 150, "volume": 1200 }
+]
