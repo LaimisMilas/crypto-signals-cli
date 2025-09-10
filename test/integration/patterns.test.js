@@ -1,10 +1,13 @@
 import { jest } from '@jest/globals';
+import { loadFixture } from '../helpers/fixtures.js';
 
-const candles = [
-  { open_time: 1, open: 10, high: 12, low: 8, close: 8 },
-  { open_time: 2, open: 7, high: 12, low: 6, close: 11 },
-  { open_time: 3, open: 10, high: 11, low: 9, close: 10 },
-];
+const candles = loadFixture('SOLUSDT_1m_sample').map(c => ({
+  open_time: c.openTime,
+  open: c.open,
+  high: c.high,
+  low: c.low,
+  close: c.close,
+}));
 
 const query = jest.fn(async (sql) => {
   if (sql.includes('from candles_1m')) {
@@ -19,7 +22,7 @@ jest.unstable_mockModule('../../src/storage/db.js', () => ({
   withTransaction,
 }));
 
-const db = await import('../../src/storage/db.js');
+await import('../../src/storage/db.js');
 const { detectPatterns } = await import('../../src/cli/patterns.js');
 
 test('detect patterns and write to db', async () => {

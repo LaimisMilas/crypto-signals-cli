@@ -28,20 +28,6 @@ async function rateLimit() {
   lastCall = getServerTime();
 }
 
-async function fetchJson(url, attempts = 3) {
-  for (let i = 0; i < attempts; i++) {
-    try {
-      const res = await fetch(url);
-      if (res.status === 429) throw new Error('rate limit');
-      if (!res.ok) throw new Error('binance error');
-      return res;
-    } catch (err) {
-      if (i === attempts - 1) throw err;
-      await new Promise(r => setTimeout(r, 500 * 2 ** i));
-    }
-  }
-}
-
 export async function fetchServerTime() {
   await rateLimit();
   const url = new URL('/api/v3/time', BASE);

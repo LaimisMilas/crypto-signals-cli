@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+import { loadFixture } from '../helpers/fixtures.js';
 
 jest.unstable_mockModule('../../src/storage/db.js', () => ({
   query: jest.fn(async () => [])
@@ -12,11 +13,7 @@ jest.unstable_mockModule('../../src/storage/repos/equity.js', () => equityRepo);
 const { backtestRun } = await import('../../src/cli/backtest.js');
 
 test('backtest inserts trade and equity', async () => {
-  const candles = [
-    { openTime: 0, open: 100, high: 110, low: 90, close: 100 },
-    { openTime: 1, open: 100, high: 120, low: 99, close: 110 },
-    { openTime: 2, open: 110, high: 160, low: 100, close: 150 }
-  ];
+  const candles = loadFixture('SOLUSDT_1m_sample');
   const signals = [null, 'buy', null];
   await backtestRun({
     strategy: 'test',
