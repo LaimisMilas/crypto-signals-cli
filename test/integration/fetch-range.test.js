@@ -23,8 +23,15 @@ const fetchMock = jest.fn(async url => {
 jest.unstable_mockModule('node-fetch', () => ({ default: fetchMock }));
 const insertMock = jest.fn(async () => {});
 jest.unstable_mockModule('../../src/storage/repos/candles.js', () => ({ insertCandles: insertMock }));
+const db = { query: jest.fn(async () => []) };
+jest.unstable_mockModule('../../src/storage/db.js', () => db);
 const jobStore = { ts: undefined };
-const getJobRunAtMock = jest.fn(async () => (jobStore.ts ?? null));
+const getJobRunAtMock = jest.fn(async name => {
+  if (jobStore.ts !== undefined) return jobStore.ts;
+  const rows = await db.query('select run_at from jobs where name=$1', [name]);
+  const r = rows[0]?.run_at;
+  return r !== undefined ? Number(r) : null;
+});
 const setJobRunAtMock = jest.fn(async (_name, ts) => {
   jobStore.ts = ts;
 });
@@ -32,8 +39,6 @@ jest.unstable_mockModule('../../src/storage/repos/jobs.js', () => ({
   getJobRunAt: getJobRunAtMock,
   setJobRunAt: setJobRunAtMock
 }));
-const db = { query: jest.fn(async () => []) };
-jest.unstable_mockModule('../../src/storage/db.js', () => db);
 
 const { fetchKlinesRange, syncServerTime, getServerTime } = await import('../../src/core/binance.js');
 
@@ -61,7 +66,7 @@ test('resume from job entry', async () => {
   fetchMock.mockClear();
   insertMock.mockClear();
   db.query.mockReset();
-  db.query.mockResolvedValueOnce([{ m: 60_000 }]);
+  db.query.mockResolvedValueOnce([{ run_at: 60_000 }]);
   await fetchKlinesRange({
     symbol: 'BTCUSDT',
     interval: '1m',
@@ -71,7 +76,7 @@ test('resume from job entry', async () => {
   const url = new URL(fetchMock.mock.calls[0][0]);
   expect(url.searchParams.get('startTime')).toBe('120000');
   expect(db.query).toHaveBeenCalledTimes(1);
-  expect(db.query.mock.calls[0][0]).toMatch(/candles/);
+  expect(db.query.mock.calls[0][0]).toMatch(/jobs/);
 });
 
 test('resume after crash using job progress', async () => {

@@ -3,6 +3,7 @@ import config from '../config/index.js';
 import { query } from '../storage/db.js';
 import { insertCandles } from '../storage/repos/candles.js';
 import { retry } from '../utils/retry.js';
+import { getJobRunAt, setJobRunAt } from '../storage/repos/jobs.js';
 
 const BASE = config.binance.baseUrl;
 let lastCall = 0;
