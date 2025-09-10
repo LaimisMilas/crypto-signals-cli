@@ -1,8 +1,9 @@
 import fetch from 'node-fetch';
 import { query } from '../storage/db.js';
 import { insertCandles } from '../storage/repos/candles.js';
+import { getJobRunAt, setJobRunAt } from '../storage/repos/jobs.js';
 
-const BASE = process.env.BINANCE_API_URL || 'https://api.binance.com';
+const BASE = config.binance.baseUrl;
 let lastCall = 0;
 
 async function rateLimit() {
@@ -10,6 +11,15 @@ async function rateLimit() {
   const wait = 500 - (now - lastCall);
   if (wait > 0) await new Promise(r => setTimeout(r, wait));
   lastCall = Date.now();
+}
+
+export async function getServerTime() {
+  await rateLimit();
+  const url = new URL('/api/v3/time', BASE);
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('binance error');
+  const data = await res.json();
+  return data.serverTime;
 }
 
 export async function fetchKlines({ symbol, interval, startMs, endMs, limit = 1000 }) {
@@ -49,21 +59,29 @@ export async function fetchKlinesRange({
   resume = false
 }) {
   const step = intervalToMs(interval);
+  const jobName = `fetch:${symbol}:${interval}`;
   let from = startMs;
   if (resume) {
-    const rows = await query('select max(open_time) as m from candles_1m where symbol=$1', [symbol]);
-    if (rows[0]?.m) from = Number(rows[0].m) + step;
+    const runAt = await getJobRunAt(jobName);
+    if (runAt !== null) {
+      from = runAt;
+    } else {
+      const rows = await query('select max(open_time) as m from candles_1m where symbol=$1', [symbol]);
+      if (rows[0]?.m) from = Number(rows[0].m) + step;
+    }
   }
   let total = 0;
   const batch = Math.min(limit, 1000);
   while (from === undefined || !endMs || from < endMs) {
+    if (from !== undefined) await setJobRunAt(jobName, from);
     const data = await fetchKlines({ symbol, interval, startMs: from, endMs, limit: batch });
     if (data.length === 0) break;
-    await insertCandles(symbol, data);
+    await insertCandles(symbol, interval, data);
     total += data.length;
     from = data[data.length - 1].openTime + step;
     if (data.length < batch) break;
     if (endMs && from >= endMs) break;
   }
+  if (from !== undefined) await setJobRunAt(jobName, from);
   return total;
 }
