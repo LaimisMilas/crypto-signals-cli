@@ -24,8 +24,8 @@ test('generates signals for SidewaysReversal strategy', async () => {
       { open_time: 2, close: 0, data: { hhll: { hh: false, ll: true } } },
     ])
     .mockResolvedValueOnce([
-      { open_time: 1, data: {} },
-      { open_time: 2, data: {} },
+      { open_time: 1, data: { bullishEngulfing: true } },
+      { open_time: 2, data: { bearishEngulfing: true } },
     ]);
   await signalsGenerate({ symbol: 'BTC', interval: '1m', strategy: 'SidewaysReversal' });
   expect(upsertMock).toHaveBeenCalledWith('BTC', [
