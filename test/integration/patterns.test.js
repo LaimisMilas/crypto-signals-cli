@@ -23,7 +23,7 @@ test('detect patterns and write to db', async () => {
   const insertCalls = db.query.mock.calls.filter((c) =>
     c[0].includes('insert into patterns_1m')
   );
-  expect(insertCalls).toHaveLength(2);
-  const callNoPattern = insertCalls.find((c) => c[1][1] === 3);
-  expect(callNoPattern[1].slice(2)).toEqual([false, false, false, false]);
+  expect(insertCalls).toHaveLength(candles.length);
+  const firstCall = insertCalls.find((c) => c[1][1] === candles[0].open_time);
+  expect(firstCall[1].slice(2)).toEqual([false, false, false, false]);
 });
