@@ -52,7 +52,7 @@ export async function fetchKlinesRange({
   const step = intervalToMs(interval);
   let from = startMs;
   if (resume) {
-    const rows = await query('select max(open_time) as m from candles_1m where symbol=$1', [symbol]);
+    const rows = await query(`select max(open_time) as m from candles_${interval} where symbol=$1`, [symbol]);
     if (rows[0]?.m) from = Number(rows[0].m) + step;
   }
   let total = 0;
@@ -60,7 +60,7 @@ export async function fetchKlinesRange({
   while (from === undefined || !endMs || from < endMs) {
     const data = await fetchKlines({ symbol, interval, startMs: from, endMs, limit: batch });
     if (data.length === 0) break;
-    await insertCandles(symbol, data);
+    await insertCandles(symbol, interval, data);
     total += data.length;
     from = data[data.length - 1].openTime + step;
     if (data.length < batch) break;

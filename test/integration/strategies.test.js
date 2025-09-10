@@ -21,11 +21,11 @@ describe('signals generation and backtest integration', () => {
 
   test('SidewaysReversal generates signals and backtest produces trades', async () => {
     queryMock
-        .mockResolvedValueOnce([
-          { open_time: 1, data: { trend: 'range', rsi: 50 }, close: 0 },
-          { open_time: 2, data: { trend: 'range', rsi: 20 }, close: 0 },
-          { open_time: 3, data: { trend: 'up', rsi: 80 }, close: 0 },
-        ])
+      .mockResolvedValueOnce([
+        { open_time: 1, data: { trend: 'range', rsi: 50 }, close: 0 },
+        { open_time: 2, data: { trend: 'range', rsi: 20 }, close: 0 },
+        { open_time: 3, data: { trend: 'up', rsi: 80 }, close: 0 },
+      ])
       .mockResolvedValueOnce([
         {
           open_time: 1,
