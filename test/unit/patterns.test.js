@@ -19,7 +19,17 @@ test('hammer', () => {
   expect(hammer(c)).toBe(true);
 });
 
+test('hammer with custom ratios', () => {
+  const c = { open: 10, close: 11, high: 12, low: 8 };
+  expect(hammer(c, { lowerMultiplier: 3 })).toBe(false);
+});
+
 test('shooting star', () => {
   const c = { open: 10, close: 9, high: 13, low: 8.9 };
   expect(shootingStar(c)).toBe(true);
+});
+
+test('shooting star with custom ratios', () => {
+  const c = { open: 10, close: 9, high: 13, low: 8.9 };
+  expect(shootingStar(c, { upperMultiplier: 4 })).toBe(false);
 });
