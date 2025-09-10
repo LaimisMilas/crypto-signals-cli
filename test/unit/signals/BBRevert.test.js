@@ -31,5 +31,5 @@ test('no signal when rsi below 70 and price inside bands', () => {
     rsi: 65,
   };
   const sig = runStrategy(BBRevert, ind);
-  expect(sig).toBe('sell');
+  expect(sig).toBeNull();
 });

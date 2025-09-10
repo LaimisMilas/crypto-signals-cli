@@ -41,7 +41,7 @@ async function fetchJson(url, attempts = 3) {
   }
 }
 
-export async function getServerTime() {
+export async function fetchServerTime() {
   await rateLimit();
   const url = new URL('/api/v3/time', BASE);
   const res = await fetch(url);

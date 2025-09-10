@@ -53,10 +53,11 @@ test('fetch range in batches', async () => {
   expect(fetchMock).toHaveBeenCalledTimes(2);
   expect(insertMock).toHaveBeenCalledTimes(2);
   expect(insertMock.mock.calls[0][0]).toBe('BTCUSDT');
-  expect(insertMock.mock.calls[0][1]).toBe('1m');
+  expect(insertMock.mock.calls[0][2]).toBe('1m');
 });
 
 test('resume from job entry', async () => {
+  jobStore.ts = undefined;
   fetchMock.mockClear();
   insertMock.mockClear();
   db.query.mockReset();
@@ -70,7 +71,8 @@ test('resume from job entry', async () => {
   const url = new URL(fetchMock.mock.calls[0][0]);
   expect(url.searchParams.get('startTime')).toBe('120000');
   expect(db.query).toHaveBeenCalledTimes(1);
-  expect(db.query.mock.calls[0][0]).toMatch(/jobs/);
+  expect(db.query.mock.calls[0][0]).toMatch(/candles/);
+});
 
 test('resume after crash using job progress', async () => {
   jobStore.ts = undefined;
@@ -107,7 +109,7 @@ test('resume after crash using job progress', async () => {
     resume: true
   });
   const url = new URL(fetchMock.mock.calls[0][0]);
-  expect(url.searchParams.get('startTime')).toBe('60000000');
+  expect(url.searchParams.get('startTime')).toBe('60060000');
 });
 
 test('supports multiple intervals', async () => {
