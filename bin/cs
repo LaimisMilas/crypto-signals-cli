@@ -26,11 +26,18 @@ program
 program.command('compute:indicators').action(computeIndicators);
 program.command('detect:patterns').action(detectPatterns);
 program
+  .command('backtest:run')
+  .requiredOption('--strategy <strategy>')
+  .requiredOption('--symbol <symbol>')
+  .requiredOption('--from <from>')
+  .requiredOption('--to <to>')
+  .requiredOption('--initial <initial>')
+  .action(backtestRun);
+program
   .command('signals:generate')
   .requiredOption('--symbol <symbol>')
   .requiredOption('--interval <interval>')
   .requiredOption('--strategy <strategy>')
   .action(signalsGenerate);
-program.command('backtest:run').action(backtestRun);
 
 program.parseAsync(process.argv);
