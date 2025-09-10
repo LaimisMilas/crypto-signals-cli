@@ -9,7 +9,8 @@
     "start": "node bin/cs",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "lint": "eslint .",
-    "migrate": "node-pg-migrate up"
+    "migrate": "node-pg-migrate up",
+    "seed": "node ./scripts/seed-symbols.js"
   },
   "dependencies": {
     "pg": "^8.11.0",
