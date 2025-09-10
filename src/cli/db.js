@@ -25,3 +25,12 @@ export async function dbMigrate() {
     proc.on('close', code => (code === 0 ? resolve() : reject(new Error('migrate failed'))));
   });
 }
+
+export async function dbSeed() {
+  await new Promise((resolve, reject) => {
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    const script = path.resolve(__dirname, '../../scripts/seed-symbols.js');
+    const proc = spawn('node', [script], { stdio: 'inherit' });
+    proc.on('close', code => (code === 0 ? resolve() : reject(new Error('seed failed'))));
+  });
+}
