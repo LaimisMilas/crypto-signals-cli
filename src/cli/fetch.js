@@ -1,4 +1,4 @@
-import { fetchKlinesRange } from '../core/binance.js';
+import { fetchKlinesRange, fetchServerTime } from '../core/binance.js';
 import logger from '../utils/logger.js';
 
 export async function fetchKlines(opts) {
@@ -6,7 +6,7 @@ export async function fetchKlines(opts) {
   let startMs = from ? Number(from) : undefined;
   let endMs = to ? Number(to) : undefined;
   if (serverTime) {
-    const serverMs = await getServerTime();
+    const serverMs = await fetchServerTime();
     const offset = serverMs - Date.now();
     if (startMs !== undefined) startMs += offset;
     if (endMs !== undefined) endMs += offset;
