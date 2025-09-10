@@ -27,6 +27,7 @@ export async function computeIndicators(opts) {
       aroon: highs.length >= 25 ? aroon(highs, lows) : null,
       bollinger: closes.length >= 20 ? bollinger(closes) : null,
       trend: trend(closes),
+      // higher high / lower low label
       hhll: hhll(highs, lows),
     };
     rows.push({ openTime: c.open_time, data });
