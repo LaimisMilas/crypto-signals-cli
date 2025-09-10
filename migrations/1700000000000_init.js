@@ -37,7 +37,10 @@ export async function up(pgm) {
     {
       symbol: { type: 'text', notNull: true },
       open_time: { type: 'bigint', notNull: true },
-      data: { type: 'jsonb', notNull: true }
+      bullish_engulfing: { type: 'boolean', notNull: true, default: false },
+      bearish_engulfing: { type: 'boolean', notNull: true, default: false },
+      hammer: { type: 'boolean', notNull: true, default: false },
+      shooting_star: { type: 'boolean', notNull: true, default: false }
     },
     {
       constraints: { primaryKey: ['symbol', 'open_time'] }

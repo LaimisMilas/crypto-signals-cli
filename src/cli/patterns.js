@@ -2,7 +2,7 @@ import { query } from '../storage/db.js';
 import { bullishEngulfing, bearishEngulfing } from '../core/patterns/engulfing.js';
 import { hammer } from '../core/patterns/hammer.js';
 import { shootingStar } from '../core/patterns/star.js';
-import { upsertPattern } from '../storage/repos/patterns.js';
+import { upsertPatterns } from '../storage/repos/patterns.js';
 
 export async function detectPatterns({
   symbol,
@@ -17,14 +17,12 @@ export async function detectPatterns({
   for (let i = 1; i < candles.length; i++) {
     const prev = candles[i - 1];
     const curr = candles[i];
-    const data = {};
-    if (bullishEngulfing(prev, curr)) data.bullishEngulfing = true;
-    if (bearishEngulfing(prev, curr)) data.bearishEngulfing = true;
-    if (hammer(curr, hammerOptions)) data.hammer = true;
-    if (shootingStar(curr, starOptions)) data.shootingStar = true;
-    if (Object.keys(data).length > 0) {
-      await upsertPattern(symbol, curr.open_time, data);
-    }
+    await upsertPatterns(symbol, curr.open_time, {
+      bullishEngulfing: bullishEngulfing(prev, curr),
+      bearishEngulfing: bearishEngulfing(prev, curr),
+      hammer: hammer(curr),
+      shootingStar: shootingStar(curr),
+    });
   }
 
   console.log('detect patterns');
