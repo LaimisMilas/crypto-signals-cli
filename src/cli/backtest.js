@@ -1,6 +1,6 @@
 import { runBacktest } from '../core/backtest/runner.js';
-import { insertTrades } from '../storage/repos/trades.js';
-import { insertEquity } from '../storage/repos/equity.js';
+import { insertTradesPaper } from '../storage/repos/tradesPaper.js';
+import { insertEquityPaper } from '../storage/repos/equityPaper.js';
 import logger from '../utils/logger.js';
 
 export async function backtestRun(opts) {
@@ -11,8 +11,8 @@ export async function backtestRun(opts) {
     initialBalance: Number(initial),
     ...rest
   });
-  await insertTrades(symbol, trades);
-  await insertEquity(symbol, equity);
+  await insertTradesPaper(symbol, trades);
+  await insertEquityPaper(symbol, equity);
   logger.info(`backtest completed for ${symbol} using ${strategy}`);
   return { trades, equity };
 }
