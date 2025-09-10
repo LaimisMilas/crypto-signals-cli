@@ -44,6 +44,8 @@ test('fetch range in batches', async () => {
   });
   expect(fetchMock).toHaveBeenCalledTimes(2);
   expect(insertMock).toHaveBeenCalledTimes(2);
+  expect(insertMock.mock.calls[0][0]).toBe('BTCUSDT');
+  expect(insertMock.mock.calls[0][1]).toBe('1m');
 });
 
 test('resume from last stored candle', async () => {
@@ -62,6 +64,7 @@ test('resume from last stored candle', async () => {
   const url = new URL(fetchMock.mock.calls[0][0]);
   expect(url.searchParams.get('startTime')).toBe('120000');
   expect(db.query).toHaveBeenCalled();
+  expect(db.query.mock.calls[0][0]).toContain('candles_1m');
 });
 
 test('resume after crash using job progress', async () => {

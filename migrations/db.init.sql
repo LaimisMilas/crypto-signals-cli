@@ -20,6 +20,18 @@ create table if not exists candles_1m (
   unique(symbol, ts)
 );
 
+create table if not exists candles_1h (
+  id bigserial primary key,
+  symbol text,
+  ts timestamptz,
+  open numeric,
+  high numeric,
+  low numeric,
+  close numeric,
+  volume numeric,
+  unique(symbol, ts)
+);
+
 create table if not exists indicators_1m (
   id bigserial primary key,
   symbol text,
@@ -36,7 +48,34 @@ create table if not exists indicators_1m (
   unique(symbol, ts)
 );
 
+create table if not exists indicators_1h (
+  id bigserial primary key,
+  symbol text,
+  ts timestamptz,
+  rsi14 numeric,
+  atr14 numeric,
+  aroon_up25 numeric,
+  aroon_down25 numeric,
+  bb_mid20 numeric,
+  bb_upper20_2 numeric,
+  bb_lower20_2 numeric,
+  trend text,
+  hhll text,
+  unique(symbol, ts)
+);
+
 create table if not exists patterns_1m (
+  id bigserial primary key,
+  symbol text,
+  ts timestamptz,
+  bullish_engulfing boolean not null default false,
+  bearish_engulfing boolean not null default false,
+  hammer boolean not null default false,
+  shooting_star boolean not null default false,
+  unique(symbol, ts)
+);
+
+create table if not exists patterns_1h (
   id bigserial primary key,
   symbol text,
   ts timestamptz,
@@ -88,6 +127,9 @@ create table if not exists jobs (
 );
 
 create index if not exists idx_candles_1m_symbol_ts on candles_1m(symbol, ts);
+create index if not exists idx_candles_1h_symbol_ts on candles_1h(symbol, ts);
 create index if not exists idx_indicators_1m_symbol_ts on indicators_1m(symbol, ts);
+create index if not exists idx_indicators_1h_symbol_ts on indicators_1h(symbol, ts);
 create index if not exists idx_patterns_1m_symbol_ts on patterns_1m(symbol, ts);
+create index if not exists idx_patterns_1h_symbol_ts on patterns_1h(symbol, ts);
 create index if not exists idx_signals_symbol_ts on signals(symbol, ts);
