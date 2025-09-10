@@ -13,7 +13,7 @@ jest.unstable_mockModule('../../src/core/binance.js', async () => {
   const { default: fetch } = await import('node-fetch');
   return {
     fetchKlinesRange: jest.fn(),
-    getServerTime: async () => {
+    fetchServerTime: async () => {
       const url = new URL('/api/v3/time', 'https://api.binance.com');
       const res = await fetch(url);
       if (!res.ok) throw new Error('binance error');

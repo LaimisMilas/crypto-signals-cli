@@ -3,6 +3,7 @@ import { upsertSignals } from '../storage/repos/signals.js';
 import { runStrategy } from '../core/signals/engine.js';
 import SidewaysReversal from '../core/signals/strategies/SidewaysReversal.js';
 import BBRevert from '../core/signals/strategies/BBRevert.js';
+import logger from '../utils/logger.js';
 
 const STRATEGIES = {
   SidewaysReversal,
@@ -49,5 +50,5 @@ export async function signalsGenerate(opts) {
   }
 
   await upsertSignals(symbol, signals);
-  console.log(`generated ${signals.length} signals`);
+  logger.info(`generated ${signals.length} signals`);
 }
