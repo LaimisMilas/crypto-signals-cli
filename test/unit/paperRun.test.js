@@ -23,7 +23,9 @@ test('paperRun executes trade, records equity, and calculates pnl', async () => 
   expect(tradesRepo.insertTradesPaper).toHaveBeenCalled();
   expect(equityRepo.insertEquityPaper).toHaveBeenCalled();
   const trades = tradesRepo.insertTradesPaper.mock.calls[0][1];
-  expect(trades[0].pnl).toBe(42);
-  const equity = equityRepo.insertEquityPaper.mock.calls[0][1];
+  expect(trades[0]).toMatchObject({ pnl: 42, status: 'closed' });
+  const equity = equityRepo.insertEquityPaper.mock.calls[0][2];
   expect(equity[equity.length - 1].balance).toBe(1042);
+  expect(equityRepo.insertEquityPaper.mock.calls[0][0]).toBe('paper');
+  expect(equityRepo.insertEquityPaper.mock.calls[0][1]).toBe('SOLUSDT');
 });

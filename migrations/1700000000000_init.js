@@ -101,13 +101,20 @@ export async function up(pgm) {
     id: 'id',
     symbol: { type: 'text', notNull: true },
     open_time: { type: 'bigint', notNull: true },
+    ts_close: { type: 'bigint' },
+    side: { type: 'text' },
     qty: 'numeric',
-    price: 'numeric'
+    price: 'numeric',
+    exit: 'numeric',
+    pnl: 'numeric',
+    status: 'text'
   });
 
   pgm.createTable('equity_paper', {
     ts: { type: 'bigint', primaryKey: true },
-    equity: 'numeric'
+    equity: 'numeric',
+    source: 'text',
+    symbol: 'text'
   });
 
   pgm.createTable('jobs', {

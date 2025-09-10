@@ -121,8 +121,13 @@ create table if not exists trades_paper
         primary key,
     symbol    text   not null,
     open_time bigint not null,
+    ts_close  bigint,
+    side      text,
     qty       numeric,
-    price     numeric
+    price     numeric,
+    exit      numeric,
+    pnl       numeric,
+    status    text
 );
 
 alter table trades_paper
@@ -132,7 +137,9 @@ create table if not exists equity_paper
 (
     ts     bigint not null
         primary key,
-    equity numeric
+    equity numeric,
+    source text,
+    symbol text
 );
 
 alter table equity_paper
