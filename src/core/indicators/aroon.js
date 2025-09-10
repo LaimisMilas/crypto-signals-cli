@@ -1,10 +1,18 @@
+import { RollingWindow } from '../../utils/math.js';
+
 export function aroon(highs, lows, period = 25) {
   if (highs.length < period) return null;
-  const sliceH = highs.slice(-period);
-  const sliceL = lows.slice(-period);
-  const highIndex = sliceH.lastIndexOf(Math.max(...sliceH));
-  const lowIndex = sliceL.lastIndexOf(Math.min(...sliceL));
-  const up = ((period - 1 - highIndex) / (period - 1)) * 100;
-  const down = ((period - 1 - lowIndex) / (period - 1)) * 100;
+
+  const highWindow = new RollingWindow(period);
+  const lowWindow = new RollingWindow(period);
+
+  for (let i = 0; i < highs.length; i++) {
+    highWindow.push(highs[i]);
+    lowWindow.push(lows[i]);
+  }
+
+  const up = (highWindow.maxAge() / (period - 1)) * 100;
+  const down = (lowWindow.minAge() / (period - 1)) * 100;
+
   return { up, down };
 }
