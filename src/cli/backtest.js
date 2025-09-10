@@ -3,7 +3,7 @@ import { insertTrades } from '../storage/repos/trades.js';
 import { insertEquity } from '../storage/repos/equity.js';
 
 export async function backtestRun(opts) {
-  const { strategy, symbol, from, to, initial, candles, signals, ...rest } = opts;
+  const { strategy, symbol, initial, candles, signals, ...rest } = opts;
   const { trades, equity } = await runBacktest({
     candles,
     signals,
