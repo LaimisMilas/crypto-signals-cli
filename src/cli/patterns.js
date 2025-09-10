@@ -4,7 +4,11 @@ import { hammer } from '../core/patterns/hammer.js';
 import { shootingStar } from '../core/patterns/star.js';
 import { upsertPattern } from '../storage/repos/patterns.js';
 
-export async function detectPatterns({ symbol }) {
+export async function detectPatterns({
+  symbol,
+  hammer: hammerOptions = {},
+  star: starOptions = {},
+} = {}) {
   const candles = await query(
     'select open_time, open, high, low, close from candles_1m where symbol=$1 order by open_time',
     [symbol]
@@ -16,8 +20,8 @@ export async function detectPatterns({ symbol }) {
     const data = {};
     if (bullishEngulfing(prev, curr)) data.bullishEngulfing = true;
     if (bearishEngulfing(prev, curr)) data.bearishEngulfing = true;
-    if (hammer(curr)) data.hammer = true;
-    if (shootingStar(curr)) data.shootingStar = true;
+    if (hammer(curr, hammerOptions)) data.hammer = true;
+    if (shootingStar(curr, starOptions)) data.shootingStar = true;
     if (Object.keys(data).length > 0) {
       await upsertPattern(symbol, curr.open_time, data);
     }
