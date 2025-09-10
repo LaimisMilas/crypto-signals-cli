@@ -1,13 +1,11 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import { dbInit } from '../src/cli/db-init.js';
-import { dbMigrate } from '../src/cli/db-migrate.js';
-import { fetchKlines } from '../src/cli/fetch-klines.js';
-import { computeIndicators } from '../src/cli/compute-indicators.js';
-import { detectPatterns } from '../src/cli/detect-patterns.js';
-import { signalsGenerate } from '../src/cli/signals-generate.js';
-import { backtestRun } from '../src/cli/backtest-run.js';
-import { paperEquitySnapshot } from '../src/cli/paper-equity-snapshot.js';
+import { dbInit, dbMigrate } from '../src/cli/db.js';
+import { fetchKlines } from '../src/cli/fetch.js';
+import { computeIndicators } from '../src/cli/compute.js';
+import { detectPatterns } from '../src/cli/patterns.js';
+import { signalsGenerate } from '../src/cli/signals.js';
+import { backtestRun } from '../src/cli/backtest.js';
 
 const program = new Command();
 program
@@ -21,6 +19,5 @@ program.command('compute:indicators').action(computeIndicators);
 program.command('detect:patterns').action(detectPatterns);
 program.command('signals:generate').action(signalsGenerate);
 program.command('backtest:run').action(backtestRun);
-program.command('paper:equity:snapshot').action(paperEquitySnapshot);
 
 program.parseAsync(process.argv);

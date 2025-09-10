@@ -1,5 +1,5 @@
 import { fetchKlinesResume } from '../core/binance.js';
-import { insertCandles } from '../storage/candles.js';
+import { insertCandles } from '../storage/repos/candles.js';
 
 export async function fetchKlines(opts) {
   const { symbol } = opts;

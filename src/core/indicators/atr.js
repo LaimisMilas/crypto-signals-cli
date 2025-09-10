@@ -1,5 +1,4 @@
-export function atr14(highs, lows, closes) {
-  const period = 14;
+export function atr(highs, lows, closes, period = 14) {
   if (highs.length < period + 1) return null;
   let trs = [];
   for (let i = 1; i < highs.length; i++) {

@@ -1,4 +1,4 @@
-export function rsi14(values, period = 14) {
+export function rsi(values, period = 14) {
   if (values.length < period + 1) {
     throw new Error('not enough data');
   }

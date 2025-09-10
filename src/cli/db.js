@@ -1,5 +1,9 @@
 import { spawn } from 'child_process';
 
+export async function dbInit() {
+  console.log('initialize database');
+}
+
 export async function dbMigrate() {
   await new Promise((resolve, reject) => {
     const proc = spawn('npm', ['run', 'migrate'], { stdio: 'inherit' });

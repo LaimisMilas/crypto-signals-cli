@@ -1,5 +1,5 @@
-import { bullishEngulfing } from '../src/core/patterns/bullishEngulfing.js';
-import { hammer } from '../src/core/patterns/hammer.js';
+import { bullishEngulfing } from '../../src/core/patterns/engulfing.js';
+import { hammer } from '../../src/core/patterns/hammer.js';
 
 test('bullish engulfing', () => {
   const c1 = { open: 10, close: 8 };
