@@ -1,21 +1,19 @@
-import { runBacktest } from '../core/backtest/runner.js';
-import { insertTradesPaper } from '../storage/repos/tradesPaper.js';
+import { LiveSimulator } from '../core/paper/liveSimulator.js';
 import { insertEquityPaper } from '../storage/repos/equityPaper.js';
 import logger from '../utils/logger.js';
 
 export async function paperRun(opts) {
   const { strategy, symbol, initial, candles, signals, ...rest } = opts;
-  const { trades, equity } = await runBacktest({
-    candles,
-    signals,
+  const simulator = new LiveSimulator({
+    symbol,
     initialBalance: Number(initial),
     ...rest
   });
-  const tradesWithStatus = trades.map(t => ({ ...t, status: t.status || 'closed' }));
-  await insertTradesPaper(symbol, tradesWithStatus);
-  await insertEquityPaper('paper', symbol, equity);
+  for (let i = 0; i < candles.length; i++) {
+    await simulator.process(candles[i], signals[i] || null);
+  }
   logger.info(`paper trading completed for ${symbol} using ${strategy}`);
-  return { trades, equity };
+  return { trades: simulator.trades, equity: simulator.equity };
 }
 
 export async function paperEquitySnapshot(opts) {

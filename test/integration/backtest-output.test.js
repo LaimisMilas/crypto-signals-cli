@@ -47,5 +47,5 @@ test('backtest generates metrics and files', async () => {
     await expect(fs.access(path.join(outDir, f))).resolves.toBeUndefined();
   }
 
-  await fs.rm(path.join('out', 'backtest'), { recursive: true, force: true });
+  await fs.rm(path.join('out', 'backtest', dirName), { recursive: true, force: true });
 });
