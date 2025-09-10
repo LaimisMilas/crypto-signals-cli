@@ -13,6 +13,15 @@ async function rateLimit() {
   lastCall = Date.now();
 }
 
+export async function getServerTime() {
+  await rateLimit();
+  const url = new URL('/api/v3/time', BASE);
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('binance error');
+  const data = await res.json();
+  return data.serverTime;
+}
+
 export async function fetchKlines({ symbol, interval, startMs, endMs, limit = 1000 }) {
   await rateLimit();
   const url = new URL('/api/v3/klines', BASE);
