@@ -5,10 +5,10 @@ jest.unstable_mockModule('../../src/storage/db.js', () => ({
   query: jest.fn(async () => [])
 }));
 
-const tradesRepo = { insertTrades: jest.fn(async () => {}) };
-const equityRepo = { insertEquity: jest.fn(async () => {}) };
-jest.unstable_mockModule('../../src/storage/repos/trades.js', () => tradesRepo);
-jest.unstable_mockModule('../../src/storage/repos/equity.js', () => equityRepo);
+const tradesRepo = { insertTradesPaper: jest.fn(async () => {}) };
+const equityRepo = { insertEquityPaper: jest.fn(async () => {}) };
+jest.unstable_mockModule('../../src/storage/repos/tradesPaper.js', () => tradesRepo);
+jest.unstable_mockModule('../../src/storage/repos/equityPaper.js', () => equityRepo);
 
 const { backtestRun } = await import('../../src/cli/backtest.js');
 
@@ -25,8 +25,8 @@ test('backtest inserts trade and equity', async () => {
     signals,
     atrPeriod: 1
   });
-  expect(tradesRepo.insertTrades).toHaveBeenCalled();
-  expect(equityRepo.insertEquity).toHaveBeenCalled();
-  expect(tradesRepo.insertTrades.mock.calls[0][1].length).toBeGreaterThan(0);
-  expect(equityRepo.insertEquity.mock.calls[0][1].length).toBeGreaterThan(0);
+  expect(tradesRepo.insertTradesPaper).toHaveBeenCalled();
+  expect(equityRepo.insertEquityPaper).toHaveBeenCalled();
+  expect(tradesRepo.insertTradesPaper.mock.calls[0][1].length).toBeGreaterThan(0);
+  expect(equityRepo.insertEquityPaper.mock.calls[0][1].length).toBeGreaterThan(0);
 });
