@@ -6,6 +6,7 @@ import { computeIndicators } from '../src/cli/compute.js';
 import { detectPatterns } from '../src/cli/patterns.js';
 import { signalsGenerate } from '../src/cli/signals.js';
 import { backtestRun } from '../src/cli/backtest.js';
+import { paperEquitySnapshot } from '../src/cli/paper.js';
 
 const program = new Command();
 program
@@ -40,5 +41,11 @@ program
   .requiredOption('--interval <interval>')
   .requiredOption('--strategy <strategy>')
   .action(signalsGenerate);
+
+program
+  .command('paper:equity:snapshot')
+  .requiredOption('--equity <equity>')
+  .requiredOption('--source <source>')
+  .action(paperEquitySnapshot);
 
 program.parseAsync(process.argv);
