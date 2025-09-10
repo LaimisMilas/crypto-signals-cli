@@ -25,6 +25,7 @@ const { detectPatterns } = await import('../../src/cli/patterns.js');
 test('detectPatterns uses custom multipliers', async () => {
   await detectPatterns({
     symbol: 'BTCUSDT',
+    interval: '1m',
     hammer: { lowerMultiplier: 1.5 },
     star: { upperMultiplier: 1.3 },
   });

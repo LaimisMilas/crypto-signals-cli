@@ -7,11 +7,12 @@ import logger from '../utils/logger.js';
 
 export async function detectPatterns({
   symbol,
+  interval,
   hammer: hammerOptions = {},
   star: starOptions = {},
 } = {}) {
   const candles = await query(
-    'select open_time, open, high, low, close from candles_1m where symbol=$1 order by open_time',
+    `select open_time, open, high, low, close from candles_${interval} where symbol=$1 order by open_time`,
     [symbol]
   );
 
@@ -40,7 +41,7 @@ export async function detectPatterns({
   }
 
   if (rows.length > 0) {
-    await upsertPatterns(symbol, rows);
+    await upsertPatterns(symbol, rows, interval);
   }
 
   logger.info('detect patterns');

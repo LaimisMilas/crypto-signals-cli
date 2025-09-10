@@ -9,9 +9,9 @@ import { hhll } from '../core/indicators/hhll.js';
 import logger from '../utils/logger.js';
 
 export async function computeIndicators(opts) {
-  const { symbol } = opts;
+  const { symbol, interval } = opts;
   const candles = await query(
-    'select open_time, open, high, low, close, volume from candles_1m where symbol=$1 order by open_time',
+    `select open_time, open, high, low, close, volume from candles_${interval} where symbol=$1 order by open_time`,
     [symbol]
   );
   const highs = [];
@@ -34,7 +34,7 @@ export async function computeIndicators(opts) {
     };
     rows.push({ openTime: c.open_time, data });
   }
-  await upsertIndicators(symbol, rows);
+  await upsertIndicators(symbol, rows, interval);
   logger.info(`computed ${rows.length} indicator rows`);
 }
 

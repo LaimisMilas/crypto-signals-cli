@@ -30,7 +30,7 @@ jest.unstable_mockModule('../../src/storage/db.js', () => ({ query: queryMock })
 const { computeIndicators } = await import('../../src/cli/compute.js');
 
 test('computeIndicators upserts computed indicator values', async () => {
-  await computeIndicators({ symbol: 'SOLUSDT' });
+  await computeIndicators({ symbol: 'SOLUSDT', interval: '1m' });
 
   expect(queryMock).toHaveBeenCalled();
   expect(upsertMock).toHaveBeenCalledTimes(1);

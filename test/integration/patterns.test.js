@@ -26,7 +26,7 @@ await import('../../src/storage/db.js');
 const { detectPatterns } = await import('../../src/cli/patterns.js');
 
 test('detect patterns and write to db', async () => {
-  await detectPatterns({ symbol: 'BTCUSDT' });
+await detectPatterns({ symbol: 'BTCUSDT', interval: '1m' });
   const insertCalls = query.mock.calls.filter((c) =>
     c[0].includes('insert into patterns_1m')
   );
