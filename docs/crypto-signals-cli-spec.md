@@ -21,7 +21,7 @@ Lengvas CLI servisas Node.js, kuris:
 - Migracijos: node-pg-migrate (arba SQL + Flyway – pasirenkama)
 
 ## Konfigūracija
-`.env` aplankas:
+`.env`
 
 ```env
 # Binance
@@ -254,7 +254,6 @@ Visoms komandoms palaikyk `--dry-run`, `--limit`, `--verbose`.
 ## Kodo struktūra
 
 ```text
-.
 ├─ bin/
 │  └─ cs                      # CLI entry (#!/usr/bin/env node, ESM import)
 ├─ src/

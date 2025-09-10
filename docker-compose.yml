@@ -3,8 +3,10 @@ services:
   db:
     image: postgres:15
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
-      POSTGRES_DB: crypto
+      POSTGRES_USER: laimonas
+      POSTGRES_PASSWORD: Laimonas_22
+      POSTGRES_DB: crypto_signals
     ports:
       - "5432:5432"
+
+
