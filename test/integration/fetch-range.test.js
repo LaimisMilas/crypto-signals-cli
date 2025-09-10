@@ -113,6 +113,27 @@ test('resume from job entry', async () => {
   expect(db.query.mock.calls[0][0]).toMatch(/jobs/);
 });
 
+test('resume from candles when job missing', async () => {
+  jobStore.ts = undefined;
+  fetchMock.mockClear();
+  insertMock.mockClear();
+  db.query.mockReset();
+  getJobRunAtMock.mockClear();
+  const last = 3_600_000;
+  db.query
+    .mockResolvedValueOnce([])
+    .mockResolvedValueOnce([{ m: last }]);
+  await fetchKlinesRange({
+    symbol: 'BTCUSDT',
+    interval: '1h',
+    endMs: 10 * 3_600_000,
+    resume: true
+  });
+  expect(db.query.mock.calls[1][0]).toMatch(/candles_1h/);
+  const url = new URL(fetchMock.mock.calls[0][0]);
+  expect(url.searchParams.get('startTime')).toBe(String(last + 3_600_000));
+});
+
 test('resume after crash using job progress', async () => {
   jobStore.ts = undefined;
   fetchMock.mockClear();
