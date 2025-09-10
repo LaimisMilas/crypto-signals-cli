@@ -36,7 +36,7 @@ test('fetchKlines adjusts times using server time', async () => {
     startMs: 1000,
     endMs: 1100,
     limit: 1000,
-    resume: undefined
+    resume: false
   });
   nowSpy.mockRestore();
 });
