@@ -1,13 +1,17 @@
 export default {
   name: 'SidewaysReversal',
   entry(ind) {
-    if (ind.hhll?.hh && !ind.hhll?.ll) {
+    const sideways = ind.trend === 'sideways';
+    const oversold = typeof ind.rsi === 'number' && ind.rsi <= 30;
+    if (sideways && oversold && ind.bullishEngulfing) {
       return 'buy';
     }
     return null;
   },
   exit(ind) {
-    if (ind.hhll?.ll) {
+    const notSideways = ind.trend !== 'sideways';
+    const overbought = typeof ind.rsi === 'number' && ind.rsi >= 70;
+    if (notSideways || overbought || ind.bearishEngulfing) {
       return 'sell';
     }
     return null;
