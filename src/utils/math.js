@@ -14,6 +14,13 @@ export function stdev(values) {
   return Math.sqrt(variance);
 }
 
+export function trueRange(currHigh, currLow, prevClose) {
+  const hl = currHigh - currLow;
+  const hc = Math.abs(currHigh - prevClose);
+  const lc = Math.abs(currLow - prevClose);
+  return Math.max(hl, hc, lc);
+}
+
 export function rolling(values, window, fn) {
   const result = [];
   for (let i = window; i <= values.length; i++) {

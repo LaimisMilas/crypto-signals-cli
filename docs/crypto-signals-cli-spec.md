@@ -286,7 +286,7 @@ Visoms komandoms palaikyk `--dry-run`, `--limit`, `--verbose`.
 │  │  └─ backtest.js
 │  └─ utils/
 │     ├─ time.js
-│     ├─ math.js              # SMA, EMA, STDEV, rolling windows
+│     ├─ math.js              # SMA, EMA, STDEV, TrueRange, rolling windows
 │     └─ logger.js
 ├─ test/                      # Jest
 │  ├─ unit/
@@ -310,9 +310,8 @@ Visoms komandoms palaikyk `--dry-run`, `--limit`, `--verbose`.
 
 - Rolling langai: naudokite efektyvius slenkančius skaičiavimus (ne recalcul nuo nulio)
 - Naudingos utilės:
-  - `SMA(N)`, `EMA(N)`
-  - `STDEV(N)`
-  - `TrueRange`, `ATR`
+  - `SMA(N)`, `EMA(N)`, `STDEV(N)`, `TrueRange(high,low,prevClose)`
+  - `ATR`
   - `AroonUp/Down(highs,lows,N)`
 - Viską maršrutuoti per tranzakcijas arba „upsert“ (`on conflict do update`) – kad būtų idempotentiška
 
