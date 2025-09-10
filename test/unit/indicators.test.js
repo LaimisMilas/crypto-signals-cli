@@ -12,9 +12,10 @@ test('rsi zigzag ~50', () => {
   expect(rsiVal).toBeLessThan(60);
 });
 
-test('trend up/down', () => {
-  expect(trend([1, 2])).toBe('up');
-  expect(trend([2, 1])).toBe('down');
+test('trend up/down/range', () => {
+  expect(trend(110, 100, 80, 50)).toBe('up');
+  expect(trend(90, 100, 30, 70)).toBe('down');
+  expect(trend(100, 100, 50, 50)).toBe('range');
 });
 
 test('hhll higher high & higher low', () => {

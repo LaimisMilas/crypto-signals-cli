@@ -21,13 +21,14 @@ export async function computeIndicators(opts) {
     highs.push(Number(c.high));
     lows.push(Number(c.low));
     closes.push(Number(c.close));
+    const a = highs.length >= 25 ? aroon(highs, lows) : null;
+    const bb = closes.length >= 20 ? bollinger(closes) : null;
     const data = {
       rsi: closes.length >= 15 ? rsi(closes) : null,
       atr: highs.length >= 15 ? atr(highs, lows, closes) : null,
-      aroon: highs.length >= 25 ? aroon(highs, lows) : null,
-      bollinger: closes.length >= 20 ? bollinger(closes) : null,
-      trend: trend(closes),
-      // higher high / lower low label
+      aroon: a,
+      bollinger: bb,
+      trend: trend(closes[closes.length - 1], bb?.middle, a?.up, a?.down),
       hhll: hhll(highs, lows),
     };
     rows.push({ openTime: c.open_time, data });

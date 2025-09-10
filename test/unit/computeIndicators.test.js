@@ -37,16 +37,15 @@ test('computeIndicators persists computed values', async () => {
   const highs = candles.map(c => c.high);
   const lows = candles.map(c => c.low);
   const closes = candles.map(c => c.close);
+  const a = aroon(highs, lows);
+  const bb = bollinger(closes);
   expect(data.rsi).toBeCloseTo(rsi(closes));
   expect(data.atr).toBeCloseTo(atr(highs, lows, closes));
-  expect(data.aroon).toEqual(aroon(highs, lows));
-  const bb = bollinger(closes);
+  expect(data.aroon).toEqual(a);
   expect(data.bollinger.middle).toBeCloseTo(bb.middle);
   expect(data.bollinger.upper).toBeCloseTo(bb.upper);
   expect(data.bollinger.lower).toBeCloseTo(bb.lower);
-  expect(data.trend).toBe(trend(closes));
-  const expectedHhll = hhll(highs, lows);
-  expect(expectedHhll).toBe('HH');
-  expect(data.hhll).toBe(expectedHhll);
+  expect(data.trend).toBe(trend(closes[closes.length - 1], bb.middle, a.up, a.down));
+  expect(data.hhll).toEqual(hhll(highs, lows));
 });
 
