@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import { query } from '../storage/db.js';
+import { insertCandles } from '../storage/repos/candles.js';
 
 const BASE = process.env.BINANCE_API_URL || 'https://api.binance.com';
 let lastCall = 0;
@@ -32,8 +33,37 @@ export async function fetchKlines({ symbol, interval, startMs, endMs, limit = 10
   }));
 }
 
-export async function fetchKlinesResume({ symbol, interval = '1m' }) {
-  const rows = await query('select max(open_time) as m from candles_1m where symbol=$1', [symbol]);
-  const startMs = rows[0]?.m ? Number(rows[0].m) + 60000 : undefined;
-  return fetchKlines({ symbol, interval, startMs });
+function intervalToMs(interval) {
+  const n = parseInt(interval.slice(0, -1));
+  const unit = interval.slice(-1);
+  const mult = { m: 60_000, h: 3_600_000, d: 86_400_000 }[unit];
+  return n * mult;
+}
+
+export async function fetchKlinesRange({
+  symbol,
+  interval = '1m',
+  startMs,
+  endMs,
+  limit = 1000,
+  resume = false
+}) {
+  const step = intervalToMs(interval);
+  let from = startMs;
+  if (resume) {
+    const rows = await query('select max(open_time) as m from candles_1m where symbol=$1', [symbol]);
+    if (rows[0]?.m) from = Number(rows[0].m) + step;
+  }
+  let total = 0;
+  const batch = Math.min(limit, 1000);
+  while (from === undefined || !endMs || from < endMs) {
+    const data = await fetchKlines({ symbol, interval, startMs: from, endMs, limit: batch });
+    if (data.length === 0) break;
+    await insertCandles(symbol, data);
+    total += data.length;
+    from = data[data.length - 1].openTime + step;
+    if (data.length < batch) break;
+    if (endMs && from >= endMs) break;
+  }
+  return total;
 }
