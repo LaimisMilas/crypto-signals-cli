@@ -20,8 +20,8 @@ beforeEach(() => {
 test('generates signals for SidewaysReversal strategy', async () => {
   queryMock
     .mockResolvedValueOnce([
-      { open_time: 1, data: { hhll: { hh: true, ll: false } } },
-      { open_time: 2, data: { hhll: { hh: false, ll: true } } },
+      { open_time: 1, data: { hhll: { hh: true, ll: false } }, close: 0 },
+      { open_time: 2, data: { hhll: { hh: false, ll: true } }, close: 0 },
     ])
     .mockResolvedValueOnce([
       { open_time: 1, data: {} },
@@ -37,8 +37,8 @@ test('generates signals for SidewaysReversal strategy', async () => {
 test('generates signals for BBRevert strategy', async () => {
   queryMock
     .mockResolvedValueOnce([
-      { open_time: 1, data: { price: 90, bbands: { lower: 100, upper: 110 } } },
-      { open_time: 2, data: { price: 120, bbands: { lower: 100, upper: 110 } } },
+      { open_time: 1, data: { bbands: { lower: 100, upper: 110 } }, close: 90 },
+      { open_time: 2, data: { bbands: { lower: 100, upper: 110 } }, close: 120 },
     ])
     .mockResolvedValueOnce([
       { open_time: 1, data: {} },
