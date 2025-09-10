@@ -1,8 +1,9 @@
 import fetch from 'node-fetch';
 import { query } from '../storage/db.js';
 import { insertCandles } from '../storage/repos/candles.js';
+import { config } from '../config/index.js';
 
-const BASE = process.env.BINANCE_API_URL || 'https://api.binance.com';
+const BASE = config.binance.baseUrl;
 let lastCall = 0;
 
 async function rateLimit() {
