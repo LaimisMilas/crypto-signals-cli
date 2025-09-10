@@ -61,6 +61,40 @@ test('fetch range in batches', async () => {
   expect(insertMock.mock.calls[0][2]).toBe('1m');
 });
 
+test('updates job progress before each batch and after completion', async () => {
+  jobStore.ts = undefined;
+  fetchMock.mockClear();
+  insertMock.mockClear();
+  setJobRunAtMock.mockClear();
+
+  await fetchKlinesRange({
+    symbol: 'BTCUSDT',
+    interval: '1m',
+    startMs: 0,
+    endMs: 1_500 * 60_000,
+    limit: 1000
+  });
+
+  // two batches => setJobRunAt called before each batch and once at the end
+  expect(setJobRunAtMock).toHaveBeenCalledTimes(3);
+
+  // first batch starts at 0
+  expect(setJobRunAtMock.mock.calls[0][1]).toBe(0);
+  expect(setJobRunAtMock.mock.invocationCallOrder[0]).toBeLessThan(
+    fetchMock.mock.invocationCallOrder[0]
+  );
+
+  // second batch starts at 60_000_000
+  expect(setJobRunAtMock.mock.calls[1][1]).toBe(60_000_000);
+  expect(setJobRunAtMock.mock.invocationCallOrder[1]).toBeLessThan(
+    fetchMock.mock.invocationCallOrder[1]
+  );
+
+  // final call stores last processed openTime + step
+  expect(setJobRunAtMock.mock.calls[2][1]).toBe(90_000_000);
+  expect(jobStore.ts).toBe(90_000_000);
+});
+
 test('resume from job entry', async () => {
   jobStore.ts = undefined;
   fetchMock.mockClear();
