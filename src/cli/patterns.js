@@ -4,7 +4,11 @@ import { hammer } from '../core/patterns/hammer.js';
 import { shootingStar } from '../core/patterns/star.js';
 import { upsertPatterns } from '../storage/repos/patterns.js';
 
-export async function detectPatterns({ symbol }) {
+export async function detectPatterns({
+  symbol,
+  hammer: hammerOptions = {},
+  star: starOptions = {},
+} = {}) {
   const candles = await query(
     'select open_time, open, high, low, close from candles_1m where symbol=$1 order by open_time',
     [symbol]

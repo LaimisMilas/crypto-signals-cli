@@ -12,15 +12,26 @@ test('rsi zigzag ~50', () => {
   expect(rsiVal).toBeLessThan(60);
 });
 
-test('trend up/down', () => {
-  expect(trend([1, 2])).toBe('up');
-  expect(trend([2, 1])).toBe('down');
+test('trend up/down/range', () => {
+  expect(trend(110, 100, 80, 50)).toBe('up');
+  expect(trend(90, 100, 30, 70)).toBe('down');
+  expect(trend(100, 100, 50, 50)).toBe('range');
 });
 
-test('hhll', () => {
-  const res = hhll([1, 2], [2, 1]);
-  expect(res.hh).toBe(true);
-  expect(res.ll).toBe(true);
+test('hhll higher high & higher low', () => {
+  const highs = [5,6,7,9,7,6,5,7,8,10,8,7,6,8,11,9,8,10,12,11,13,14,15,16,17,18,19,20,21,22];
+  const lows =  [1,2,3,4,3,2,1,3,4,5,4,3,2,4,5,6,5,6,7,6,8,9,10,11,12,13,14,15,16,17];
+  expect(hhll(highs, lows)).toBe('HH');
+});
+
+test('hhll lower high & lower low', () => {
+  const highs = [5,6,7,9,7,6,5,7,8,10,8,7,6,8,11,9,8,10,12,11,13,14,15,16,17,18,19,20,21,22].reverse();
+  const lows =  [1,2,3,4,3,2,1,3,4,5,4,3,2,4,5,6,5,6,7,6,8,9,10,11,12,13,14,15,16,17].reverse();
+  expect(hhll(highs, lows)).toBe('LL');
+});
+
+test('hhll insufficient data', () => {
+  expect(hhll([1, 2], [2, 1])).toBe('N/A');
 });
 
 test('atr constant range', () => {
