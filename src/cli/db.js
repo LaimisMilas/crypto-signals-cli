@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { Client } from 'pg';
+import logger from '../utils/logger.js';
 
 export async function dbInit() {
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -12,7 +13,7 @@ export async function dbInit() {
   await client.connect();
   try {
     await client.query(sql);
-    console.log('database initialized');
+    logger.info('database initialized');
   } finally {
     await client.end();
   }

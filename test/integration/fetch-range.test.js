@@ -23,14 +23,26 @@ const fetchMock = jest.fn(async url => {
 jest.unstable_mockModule('node-fetch', () => ({ default: fetchMock }));
 const insertMock = jest.fn(async () => {});
 jest.unstable_mockModule('../../src/storage/repos/candles.js', () => ({ insertCandles: insertMock }));
+const jobStore = { ts: undefined };
+const getJobRunAtMock = jest.fn(async () => (jobStore.ts ?? null));
+const setJobRunAtMock = jest.fn(async (_name, ts) => {
+  jobStore.ts = ts;
+});
+jest.unstable_mockModule('../../src/storage/repos/jobs.js', () => ({
+  getJobRunAt: getJobRunAtMock,
+  setJobRunAt: setJobRunAtMock
+}));
 const db = { query: jest.fn(async () => []) };
 jest.unstable_mockModule('../../src/storage/db.js', () => db);
 
 const { fetchKlinesRange, syncServerTime, getServerTime } = await import('../../src/core/binance.js');
 
 test('fetch range in batches', async () => {
+  jobStore.ts = undefined;
   fetchMock.mockClear();
   insertMock.mockClear();
+  getJobRunAtMock.mockClear();
+  setJobRunAtMock.mockClear();
   await fetchKlinesRange({
     symbol: 'BTCUSDT',
     interval: '1m',
@@ -40,6 +52,8 @@ test('fetch range in batches', async () => {
   });
   expect(fetchMock).toHaveBeenCalledTimes(2);
   expect(insertMock).toHaveBeenCalledTimes(2);
+  expect(insertMock.mock.calls[0][0]).toBe('BTCUSDT');
+  expect(insertMock.mock.calls[0][1]).toBe('1m');
 });
 
 test('resume from job entry', async () => {
@@ -57,6 +71,43 @@ test('resume from job entry', async () => {
   expect(url.searchParams.get('startTime')).toBe('120000');
   expect(db.query).toHaveBeenCalledTimes(1);
   expect(db.query.mock.calls[0][0]).toMatch(/jobs/);
+
+test('resume after crash using job progress', async () => {
+  jobStore.ts = undefined;
+  fetchMock.mockClear();
+  insertMock.mockReset();
+  getJobRunAtMock.mockClear();
+  setJobRunAtMock.mockClear();
+  // first run: insert first batch then fail
+  insertMock
+    .mockImplementationOnce(async () => {})
+    .mockImplementationOnce(async () => {
+      throw new Error('boom');
+    });
+  await expect(
+    fetchKlinesRange({
+      symbol: 'BTCUSDT',
+      interval: '1m',
+      startMs: 0,
+      endMs: 2_000 * 60_000,
+      limit: 1000
+    })
+  ).rejects.toThrow('boom');
+  expect(jobStore.ts).toBe(60_000_000);
+
+  // second run should resume from stored job timestamp
+  insertMock.mockReset();
+  insertMock.mockResolvedValue(undefined);
+  fetchMock.mockClear();
+  await fetchKlinesRange({
+    symbol: 'BTCUSDT',
+    interval: '1m',
+    endMs: 2_000 * 60_000,
+    limit: 1000,
+    resume: true
+  });
+  const url = new URL(fetchMock.mock.calls[0][0]);
+  expect(url.searchParams.get('startTime')).toBe('60000000');
 });
 
 test('supports multiple intervals', async () => {

@@ -6,6 +6,7 @@ import { aroon } from '../core/indicators/aroon.js';
 import { bollinger } from '../core/indicators/bollinger.js';
 import { trend } from '../core/indicators/trend.js';
 import { hhll } from '../core/indicators/hhll.js';
+import logger from '../utils/logger.js';
 
 export async function computeIndicators(opts) {
   const { symbol } = opts;
@@ -34,6 +35,6 @@ export async function computeIndicators(opts) {
     rows.push({ openTime: c.open_time, data });
   }
   await upsertIndicators(symbol, rows);
-  console.log(`computed ${rows.length} indicator rows`);
+  logger.info(`computed ${rows.length} indicator rows`);
 }
 
