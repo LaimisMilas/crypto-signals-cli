@@ -234,10 +234,10 @@ cs compute:indicators --symbol SOLUSDT --interval 1m
 cs detect:patterns --symbol SOLUSDT --interval 1m
 
 # Signalai
-cs signals:generate --strategy SidewaysReversal --symbol SOLUSDT --interval 1m --from 2025-01-01
+cs signals:generate --strategy SidewaysReversal --symbol SOLUSDT --interval 1m --from 2025-01-01 --strategy-config '{"oversoldRsi":25}'
 
 # Backtest / paper
-cs backtest:run --strategy SidewaysReversal --symbol SOLUSDT --interval 1m --from 2025-06-01 --to 2025-09-01 --initial 10000
+cs backtest:run --strategy SidewaysReversal --symbol SOLUSDT --interval 1m --from 2025-06-01 --to 2025-09-01 --initial 10000 --strategy-config '{"oversoldRsi":25}'
 cs paper:equity:snapshot --equity 10150 --source live
 
 # Jobs

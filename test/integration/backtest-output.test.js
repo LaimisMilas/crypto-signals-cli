@@ -33,6 +33,7 @@ test('backtest generates metrics and files', async () => {
     signals,
     atrPeriod: 1,
     atrMultiplier: 1,
+    strategyConfig: '{"foo":"bar"}',
   });
 
   expect(metrics.winrate).toBeCloseTo(0.5);
@@ -46,6 +47,9 @@ test('backtest generates metrics and files', async () => {
   for (const f of files) {
     await expect(fs.access(path.join(outDir, f))).resolves.toBeUndefined();
   }
+
+  const cfg = JSON.parse(await fs.readFile(path.join(outDir, 'config.json'), 'utf8'));
+  expect(cfg.strategyConfig).toEqual({ foo: 'bar' });
 
   await fs.rm(path.join('out', 'backtest', dirName), { recursive: true, force: true });
 });

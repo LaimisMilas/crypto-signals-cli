@@ -5,13 +5,14 @@ Generuoja pirkimo/pardavimo signalus pagal pasirinktą strategiją.
 ## Naudojimas
 ```bash
 node bin/cs signals:generate --symbol BTCUSDT --interval 1m \
-  --strategy SidewaysReversal [OPCIJOS]
+  --strategy SidewaysReversal --strategy-config '{"oversoldRsi":25}' [OPCIJOS]
 ```
 
 ## Opcijos
 - `--symbol <symbol>` – privalomas.
 - `--interval <interval>` – privalomas.
 - `--strategy <strategy>` – privalomas (`SidewaysReversal` arba `BBRevert`).
+- `--strategy-config <json>` – papildoma strategijos konfigūracija.
 - Globalios: `--dry-run`, `--limit`, `--verbose`.
 
 ## Aktyvumo srautas

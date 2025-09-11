@@ -37,7 +37,7 @@ jest.unstable_mockModule('../../src/storage/repos/signals.js', () => ({
 const { signalsGenerate } = await import('../../src/cli/signals.js');
 
 it('uses close price for BBRevert strategy', async () => {
-  await signalsGenerate({ symbol: 'BTCUSDT', interval: '1m', strategy: 'BBRevert' });
+  await signalsGenerate({ symbol: 'BTCUSDT', interval: '1m', strategy: 'BBRevert', strategyConfig: '{}' });
   expect(upsertSignals).toHaveBeenCalledWith('BTCUSDT', '1m', 'BBRevert', [
     { openTime: 1, signal: 'buy' },
     { openTime: 2, signal: 'sell' }
