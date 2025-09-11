@@ -1,14 +1,16 @@
 import { withTransaction } from '../db.js';
 
-export async function upsertSignals(symbol, signals) {
+// Upsert signals keeping strategy and interval distinction.
+// This ensures that different strategies or intervals do not overwrite each other.
+export async function upsertSignals(symbol, interval, strategy, signals) {
   await withTransaction(async (client) => {
     await Promise.all(
       signals.map((s) =>
         client.query(
-          `insert into signals (symbol, open_time, signal)
-           values ($1,$2,$3)
-           on conflict (symbol, open_time) do update set signal = excluded.signal`,
-          [symbol, s.openTime, s.signal]
+          `insert into signals (symbol, interval, open_time, strategy, signal)
+           values ($1,$2,$3,$4,$5)
+           on conflict (symbol, interval, open_time, strategy) do update set signal = excluded.signal`,
+          [symbol, interval, s.openTime, strategy, s.signal]
         )
       )
     );
@@ -16,3 +18,4 @@ export async function upsertSignals(symbol, signals) {
 }
 
 export default { upsertSignals };
+

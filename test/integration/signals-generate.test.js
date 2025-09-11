@@ -38,7 +38,7 @@ const { signalsGenerate } = await import('../../src/cli/signals.js');
 
 it('uses close price for BBRevert strategy', async () => {
   await signalsGenerate({ symbol: 'BTCUSDT', interval: '1m', strategy: 'BBRevert' });
-  expect(upsertSignals).toHaveBeenCalledWith('BTCUSDT', [
+  expect(upsertSignals).toHaveBeenCalledWith('BTCUSDT', '1m', 'BBRevert', [
     { openTime: 1, signal: 'buy' },
     { openTime: 2, signal: 'sell' }
   ]);
