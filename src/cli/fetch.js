@@ -13,8 +13,17 @@ export async function fetchKlines(opts) {
     limit,
     dryRun
   } = opts;
-  let startMs = from ? Number(from) : undefined;
-  let endMs = to ? Number(to) : undefined;
+
+  const parseTime = (value) => {
+    if (value === undefined) return undefined;
+    const numeric = Number(value);
+    if (!Number.isNaN(numeric)) return numeric;
+    const ms = Date.parse(value);
+    return Number.isNaN(ms) ? undefined : ms;
+  };
+
+  let startMs = parseTime(from);
+  let endMs = parseTime(to);
   if (serverTime) {
     const serverMs = await fetchServerTime();
     const offset = serverMs - Date.now();

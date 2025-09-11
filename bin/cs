@@ -37,8 +37,8 @@ program.command('db:seed').action(dbSeed);
 program
   .command('fetch:klines')
   .requiredOption('--symbol <symbol>')
-  .option('--from <ms>')
-  .option('--to <ms>')
+  .option('--from <time>', 'start time in ms or ISO 8601 string')
+  .option('--to <time>', 'end time in ms or ISO 8601 string')
   .option('--interval <interval>', '1m')
   .option('--fetch-limit <number>', '1000')
   .option('--resume')
