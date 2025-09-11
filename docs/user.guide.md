@@ -38,7 +38,8 @@
 
 Sugeneruokite signalus pasirinkta strategija:
 ```bash
-node bin/cs signals:generate --symbol BTCUSDT --interval 1m --strategy SidewaysReversal
+node bin/cs signals:generate --symbol BTCUSDT --interval 1m \
+  --strategy SidewaysReversal --strategy-config '{"oversoldRsi":25}'
 ```
 Komanda įrašys pirkimo ir pardavimo signalus į `signals` lentelę ir išves, kiek jų buvo sugeneruota.
 

@@ -39,7 +39,7 @@ test('generates signals for SidewaysReversal strategy', async () => {
         shooting_star: false,
       },
     ]);
-  await signalsGenerate({ symbol: 'BTC', interval: '1m', strategy: 'SidewaysReversal' });
+  await signalsGenerate({ symbol: 'BTC', interval: '1m', strategy: 'SidewaysReversal', strategyConfig: '{}' });
   expect(upsertMock).toHaveBeenCalledWith('BTC', '1m', 'SidewaysReversal', [
     { openTime: 1, signal: 'buy' },
     { openTime: 2, signal: 'sell' },
@@ -68,7 +68,7 @@ test('generates signals for BBRevert strategy', async () => {
         shooting_star: false,
       },
     ]);
-  await signalsGenerate({ symbol: 'ETH', interval: '1m', strategy: 'BBRevert' });
+  await signalsGenerate({ symbol: 'ETH', interval: '1m', strategy: 'BBRevert', strategyConfig: '{}' });
   expect(upsertMock).toHaveBeenCalledWith('ETH', '1m', 'BBRevert', [
     { openTime: 1, signal: 'buy' },
     { openTime: 2, signal: 'sell' },

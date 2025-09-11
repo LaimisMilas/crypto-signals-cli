@@ -5,7 +5,8 @@ Paleidžia pasirinktos strategijos backtestą pagal istorines žvakes ir signalu
 ## Naudojimas
 ```bash
 node bin/cs backtest:run --strategy SidewaysReversal --symbol BTCUSDT \
-  --interval 1m --from 1700000000000 --to 1700003600000 --initial 1000 [OPCIJOS]
+  --interval 1m --from 1700000000000 --to 1700003600000 --initial 1000 \
+  --strategy-config '{"oversoldRsi":25}' [OPCIJOS]
 ```
 
 ## Opcijos
@@ -14,6 +15,7 @@ node bin/cs backtest:run --strategy SidewaysReversal --symbol BTCUSDT \
 - `--interval <interval>` – privalomas.
 - `--from <ms>` / `--to <ms>` – laikų rėžiai.
 - `--initial <sum>` – pradinė balanso suma.
+- `--strategy-config <json>` – papildoma strategijos konfigūracija.
 - Globalios: `--dry-run`, `--limit`, `--verbose`.
 
 ## Aktyvumo srautas

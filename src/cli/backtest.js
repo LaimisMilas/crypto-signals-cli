@@ -16,6 +16,7 @@ export async function backtestRun(opts) {
     initial,
     candles: candlesInput,
     signals: signalsInput,
+    strategyConfig,
     dryRun,
     limit,
     ...rest
@@ -93,7 +94,8 @@ export async function backtestRun(opts) {
     to,
     interval,
     initial,
-    ...rest
+    ...(strategyConfig && { strategyConfig: JSON.parse(strategyConfig) }),
+    ...rest,
   };
   await fs.writeFile(
     path.join(outDir, 'config.json'),

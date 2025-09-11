@@ -68,12 +68,14 @@ program
   .requiredOption('--from <from>')
   .requiredOption('--to <to>')
   .requiredOption('--initial <initial>')
+  .option('--strategy-config <json>')
   .action(backtestRun);
 program
   .command('signals:generate')
   .requiredOption('--symbol <symbol>')
   .requiredOption('--interval <interval>')
   .requiredOption('--strategy <strategy>')
+  .option('--strategy-config <json>')
   .action(signalsGenerate);
 
 program
