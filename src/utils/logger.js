@@ -1,3 +1,7 @@
 import pino from 'pino';
-export const logger = pino({ level: process.env.APP_LOG_LEVEL || 'info' });
+import config from '../config/index.js';
+
+export const logger = pino();
+logger.level = config.app.logLevel;
+
 export default logger;
