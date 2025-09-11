@@ -40,6 +40,7 @@ test('backtest runs using DB data', async () => {
   expect(queryMock).toHaveBeenCalledTimes(2);
   expect(queryMock.mock.calls[0][0]).toMatch(/candles_1m/);
   expect(queryMock.mock.calls[1][0]).toMatch(/signals/);
+  expect(queryMock.mock.calls[1][1][2]).toBe('1m');
   expect(tradesRepo.insertTradesPaper).toHaveBeenCalled();
   expect(equityRepo.insertEquityPaper).toHaveBeenCalled();
   expect(tradesRepo.insertTradesPaper.mock.calls[0][1].length).toBeGreaterThan(0);
