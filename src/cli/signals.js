@@ -7,13 +7,14 @@ import logger from '../utils/logger.js';
 
 const STRATEGIES = {
   SidewaysReversal,
-  BBRevert,
+  BBRevert: () => BBRevert,
 };
 
 export async function signalsGenerate(opts) {
-  const { symbol, interval, strategy: strategyName, dryRun, limit } = opts;
-  const strategy = STRATEGIES[strategyName];
-  if (!strategy) throw new Error(`Unknown strategy: ${strategyName}`);
+  const { symbol, interval, strategy: strategyName, strategyConfig, dryRun, limit } = opts;
+  const strategyFactory = STRATEGIES[strategyName];
+  if (!strategyFactory) throw new Error(`Unknown strategy: ${strategyName}`);
+  const strategy = strategyFactory(strategyConfig ? JSON.parse(strategyConfig) : undefined);
 
   const indicators = await query(
     `select i.open_time, i.data, c.close
