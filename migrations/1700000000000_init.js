@@ -123,7 +123,7 @@ export async function up(pgm) {
     run_at: { type: 'bigint' }
   });
 
-  pgm.createIndex('signals', ['symbol', 'open_time']);
+  pgm.createIndex('signals', ['symbol', 'open_time'], { unique: true });
 }
 
 export async function down(pgm) {
