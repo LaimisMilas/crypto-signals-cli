@@ -50,6 +50,6 @@ export async function signalsGenerate(opts) {
     if (sig) signals.push({ openTime: row.open_time, signal: sig });
   }
 
-  if (!dryRun) await upsertSignals(symbol, signals);
+  if (!dryRun) await upsertSignals(symbol, interval, strategyName, signals);
   logger.info(`generated ${signals.length} signals`);
 }

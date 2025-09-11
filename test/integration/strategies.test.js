@@ -52,7 +52,7 @@ describe('signals generation and backtest integration', () => {
       ]);
 
     await signalsGenerate({ symbol: 'BTC', interval: '1m', strategy: 'SidewaysReversal' });
-    expect(upsertMock).toHaveBeenCalledWith('BTC', [
+    expect(upsertMock).toHaveBeenCalledWith('BTC', '1m', 'SidewaysReversal', [
       { openTime: 2, signal: 'buy' },
       { openTime: 3, signal: 'sell' },
     ]);
@@ -64,7 +64,7 @@ describe('signals generation and backtest integration', () => {
       close: c.close,
     }));
 
-    const generated = upsertMock.mock.calls[0][1];
+    const generated = upsertMock.mock.calls[0][3];
     const signals = candles.map(c => {
       const s = generated.find(g => g.openTime === c.openTime);
       return s ? s.signal : null;
@@ -114,7 +114,7 @@ describe('signals generation and backtest integration', () => {
       ]);
 
     await signalsGenerate({ symbol: 'ETH', interval: '1m', strategy: 'BBRevert' });
-    expect(upsertMock).toHaveBeenCalledWith('ETH', [
+    expect(upsertMock).toHaveBeenCalledWith('ETH', '1m', 'BBRevert', [
       { openTime: 2, signal: 'buy' },
       { openTime: 3, signal: 'sell' },
     ]);
@@ -126,7 +126,7 @@ describe('signals generation and backtest integration', () => {
       close: c.close,
     }));
 
-    const generated = upsertMock.mock.calls[0][1];
+    const generated = upsertMock.mock.calls[0][3];
     const signals = candles.map(c => {
       const s = generated.find(g => g.openTime === c.openTime);
       return s ? s.signal : null;
