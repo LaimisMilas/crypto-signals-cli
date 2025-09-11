@@ -3,6 +3,6 @@ import SidewaysReversal from '../../src/core/signals/strategies/SidewaysReversal
 
 test('runStrategy returns buy', () => {
   const ind = { trend: 'range', rsi: 20, bullishEngulfing: true };
-  const sig = runStrategy(SidewaysReversal, ind);
+  const sig = runStrategy(SidewaysReversal(), ind);
   expect(sig).toBe('buy');
 });
