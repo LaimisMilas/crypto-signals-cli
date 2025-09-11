@@ -41,6 +41,7 @@ export async function signalsGenerate(opts) {
   );
 
   const signals = [];
+  let inPosition = false;
   for (const row of indicators.slice(0, indicatorLimit)) {
     const ind = {
       close: Number(row.close),
@@ -48,7 +49,13 @@ export async function signalsGenerate(opts) {
       ...(patternMap.get(row.open_time) || {}),
     };
     const sig = runStrategy(strategy, ind);
-    if (sig) signals.push({ openTime: row.open_time, signal: sig });
+    if (sig === 'buy') {
+      inPosition = true;
+      signals.push({ openTime: row.open_time, signal: sig });
+    } else if (sig === 'sell' && inPosition) {
+      signals.push({ openTime: row.open_time, signal: sig });
+      inPosition = false;
+    }
   }
 
   if (!dryRun) await upsertSignals(symbol, interval, strategyName, signals);

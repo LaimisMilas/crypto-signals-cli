@@ -143,4 +143,42 @@ describe('signals generation and backtest integration', () => {
     expect(trades.length).toBeGreaterThan(0);
     expect(equity.length).toBe(candles.length);
   });
+
+  test('ignores sell signals when not in position', async () => {
+    queryMock
+      .mockResolvedValueOnce([
+        { open_time: 1, data: { trend: 'up', rsi: 80 }, close: 0 },
+        { open_time: 2, data: { trend: 'range', rsi: 20 }, close: 0 },
+        { open_time: 3, data: { trend: 'up', rsi: 80 }, close: 0 },
+      ])
+      .mockResolvedValueOnce([
+        {
+          open_time: 1,
+          bullish_engulfing: false,
+          bearish_engulfing: false,
+          hammer: false,
+          shooting_star: false,
+        },
+        {
+          open_time: 2,
+          bullish_engulfing: true,
+          bearish_engulfing: false,
+          hammer: false,
+          shooting_star: false,
+        },
+        {
+          open_time: 3,
+          bullish_engulfing: false,
+          bearish_engulfing: false,
+          hammer: false,
+          shooting_star: false,
+        },
+      ]);
+
+    await signalsGenerate({ symbol: 'BTC', interval: '1m', strategy: 'SidewaysReversal', strategyConfig: '{}' });
+    expect(upsertMock).toHaveBeenCalledWith('BTC', '1m', 'SidewaysReversal', [
+      { openTime: 2, signal: 'buy' },
+      { openTime: 3, signal: 'sell' },
+    ]);
+  });
 });
