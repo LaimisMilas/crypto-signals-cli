@@ -112,7 +112,7 @@ create table if not exists signals
 alter table signals
     owner to laimonas;
 
-create unique index if not exists signals_symbol_open_time_index
+create unique index signals_symbol_open_time_index
     on signals (symbol, open_time);
 
 create table if not exists trades_paper
