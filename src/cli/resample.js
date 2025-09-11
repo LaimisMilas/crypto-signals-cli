@@ -10,7 +10,7 @@ function intervalToMs(interval) {
 }
 
 export async function resampleCandles(opts) {
-  const { from, to, symbol } = opts;
+  const { from, to, symbol, dryRun, limit } = opts;
   const fromMs = intervalToMs(from);
   const toMs = intervalToMs(to);
   if (toMs % fromMs !== 0) {
@@ -20,9 +20,10 @@ export async function resampleCandles(opts) {
     `select open_time, open, high, low, close, volume from candles_${from} where symbol=$1 order by open_time`,
     [symbol]
   );
+  const rowLimit = limit !== undefined ? Math.min(rows.length, Number(limit)) : rows.length;
   const out = [];
   let curr = null;
-  for (const r of rows) {
+  for (const r of rows.slice(0, rowLimit)) {
     const t = Number(r.open_time);
     const bucket = Math.floor(t / toMs) * toMs;
     if (!curr || bucket !== curr.openTime) {
@@ -43,7 +44,7 @@ export async function resampleCandles(opts) {
     }
   }
   if (curr) out.push(curr);
-  if (out.length > 0) await insertCandles(symbol, out, to);
+  if (out.length > 0 && !dryRun) await insertCandles(symbol, out, to);
   logger.info(`resampled ${out.length} candles from ${from} to ${to}`);
 }
 

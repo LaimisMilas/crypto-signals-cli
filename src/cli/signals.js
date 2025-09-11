@@ -11,7 +11,7 @@ const STRATEGIES = {
 };
 
 export async function signalsGenerate(opts) {
-  const { symbol, interval, strategy: strategyName } = opts;
+  const { symbol, interval, strategy: strategyName, dryRun, limit } = opts;
   const strategy = STRATEGIES[strategyName];
   if (!strategy) throw new Error(`Unknown strategy: ${strategyName}`);
 
@@ -22,6 +22,7 @@ export async function signalsGenerate(opts) {
      where i.symbol=$1 order by i.open_time`,
     [symbol]
   );
+  const indicatorLimit = limit !== undefined ? Math.min(indicators.length, Number(limit)) : indicators.length;
   const patterns = await query(
     `select open_time, bullish_engulfing, bearish_engulfing, hammer, shooting_star from patterns_${interval} where symbol=$1`,
     [symbol]
@@ -39,7 +40,7 @@ export async function signalsGenerate(opts) {
   );
 
   const signals = [];
-  for (const row of indicators) {
+  for (const row of indicators.slice(0, indicatorLimit)) {
     const ind = {
       close: Number(row.close),
       ...row.data,
@@ -49,6 +50,6 @@ export async function signalsGenerate(opts) {
     if (sig) signals.push({ openTime: row.open_time, signal: sig });
   }
 
-  await upsertSignals(symbol, signals);
+  if (!dryRun) await upsertSignals(symbol, signals);
   logger.info(`generated ${signals.length} signals`);
 }

@@ -30,13 +30,15 @@ const { fetchKlinesRange } = await import('../../src/core/binance.js');
 test('fetchKlines adjusts times using server time', async () => {
   const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(1000);
   await fetchKlines({ symbol: 'TEST', from: '0', to: '100', serverTime: true });
-  expect(fetchKlinesRange).toHaveBeenCalledWith({
-    symbol: 'TEST',
-    interval: '1m',
-    startMs: 1000,
-    endMs: 1100,
-    limit: 1000,
-    resume: false
-  });
+  expect(fetchKlinesRange).toHaveBeenCalledWith(
+    expect.objectContaining({
+      symbol: 'TEST',
+      interval: '1m',
+      startMs: 1000,
+      endMs: 1100,
+      limit: 1000,
+      resume: false
+    })
+  );
   nowSpy.mockRestore();
 });

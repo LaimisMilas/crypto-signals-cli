@@ -8,11 +8,27 @@ import { signalsGenerate } from '../src/cli/signals.js';
 import { backtestRun } from '../src/cli/backtest.js';
 import { paperEquitySnapshot } from '../src/cli/paper.js';
 import { resampleCandles } from '../src/cli/resample.js';
+import logger from '../src/utils/logger.js';
 
 const program = new Command();
 program
   .name('cs')
-  .description('Crypto Signals CLI');
+  .description('Crypto Signals CLI')
+  .option('--dry-run', 'skip database writes')
+  .option('--limit <n>', 'limit number of processed items', (v) => parseInt(v, 10))
+  .option('--verbose', 'enable verbose logging');
+
+program.hook('preAction', (thisCommand, actionCommand) => {
+  const globalOpts = thisCommand.opts();
+  if (globalOpts.verbose) {
+    logger.level = 'debug';
+  }
+  for (const [key, value] of Object.entries(globalOpts)) {
+    if (actionCommand.getOptionValue(key) === undefined) {
+      actionCommand.setOptionValue(key, value);
+    }
+  }
+});
 
 program.command('db:init').action(dbInit);
 program.command('db:migrate').action(dbMigrate);
@@ -23,7 +39,7 @@ program
   .option('--from <ms>')
   .option('--to <ms>')
   .option('--interval <interval>', '1m')
-  .option('--limit <number>', '1000')
+  .option('--fetch-limit <number>', '1000')
   .option('--resume')
   .option('--server-time')
   .action(fetchKlines);
