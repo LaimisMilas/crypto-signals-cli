@@ -9,16 +9,17 @@ import { hhll } from '../core/indicators/hhll.js';
 import logger from '../utils/logger.js';
 
 export async function computeIndicators(opts) {
-  const { symbol, interval } = opts;
+  const { symbol, interval, dryRun, limit } = opts;
   const candles = await query(
     `select open_time, open, high, low, close, volume from candles_${interval} where symbol=$1 order by open_time`,
     [symbol]
   );
+  const rowsLimit = limit !== undefined ? Math.min(candles.length, Number(limit)) : candles.length;
   const highs = [];
   const lows = [];
   const closes = [];
   const rows = [];
-  for (const c of candles) {
+  for (const c of candles.slice(0, rowsLimit)) {
     highs.push(Number(c.high));
     lows.push(Number(c.low));
     closes.push(Number(c.close));
@@ -34,7 +35,7 @@ export async function computeIndicators(opts) {
     };
     rows.push({ openTime: c.open_time, data });
   }
-  await upsertIndicators(symbol, rows, interval);
+  if (!dryRun) await upsertIndicators(symbol, rows, interval);
   logger.info(`computed ${rows.length} indicator rows`);
 }
 

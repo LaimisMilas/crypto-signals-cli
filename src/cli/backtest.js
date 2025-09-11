@@ -16,6 +16,8 @@ export async function backtestRun(opts) {
     initial,
     candles: candlesInput,
     signals: signalsInput,
+    dryRun,
+    limit,
     ...rest
   } = opts;
 
@@ -32,6 +34,8 @@ export async function backtestRun(opts) {
       close: Number(c.close)
     }));
   }
+  const candleLimit = limit !== undefined ? Math.min(candles.length, Number(limit)) : candles.length;
+  candles = candles.slice(0, candleLimit);
 
   let signals = signalsInput;
   if (!signals) {
@@ -42,6 +46,7 @@ export async function backtestRun(opts) {
     const map = new Map(rows.map((r) => [Number(r.open_time), r.signal]));
     signals = candles.map((c) => map.get(c.openTime) || null);
   }
+  signals = signals.slice(0, candleLimit);
 
   const { trades, equity, metrics } = await runBacktest({
     candles,
@@ -51,8 +56,10 @@ export async function backtestRun(opts) {
   });
   const tradesWithStatus = trades.map(t => ({ ...t, status: t.status || 'closed' }));
 
-  await insertTradesPaper(symbol, tradesWithStatus);
-  await insertEquityPaper('backtest', symbol, equity);
+  if (!dryRun) {
+    await insertTradesPaper(symbol, tradesWithStatus);
+    await insertEquityPaper('backtest', symbol, equity);
+  }
 
   const dirName = `${strategy}_${symbol}_${interval}_${from}_${to}`;
   const outDir = path.join('out', 'backtest', dirName);

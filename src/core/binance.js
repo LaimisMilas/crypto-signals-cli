@@ -80,7 +80,9 @@ export async function fetchKlinesRange({
   startMs,
   endMs,
   limit = 1000,
-  resume = false
+  resume = false,
+  dryRun = false,
+  max
 }) {
   const step = intervalToMs(interval);
   const jobName = `fetch:${symbol}:${interval}`;
@@ -97,15 +99,17 @@ export async function fetchKlinesRange({
   let total = 0;
   const batch = Math.min(limit, 1000);
   while (from === undefined || !endMs || from < endMs) {
-    if (from !== undefined) await setJobRunAt(jobName, from);
-    const data = await fetchKlines({ symbol, interval, startMs: from, endMs, limit: batch });
+    if (max !== undefined && total >= max) break;
+    if (from !== undefined && !dryRun) await setJobRunAt(jobName, from);
+    const apiLimit = max !== undefined ? Math.min(batch, max - total) : batch;
+    const data = await fetchKlines({ symbol, interval, startMs: from, endMs, limit: apiLimit });
     if (data.length === 0) break;
-    await insertCandles(symbol, data, interval);
+    if (!dryRun) await insertCandles(symbol, data, interval);
     total += data.length;
     from = data[data.length - 1].openTime + step;
-    if (data.length < batch) break;
+    if (data.length < apiLimit) break;
     if (endMs && from >= endMs) break;
   }
-  if (from !== undefined) await setJobRunAt(jobName, from);
+  if (from !== undefined && !dryRun) await setJobRunAt(jobName, from);
   return total;
 }

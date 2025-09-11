@@ -10,11 +10,14 @@ export async function detectPatterns({
   interval,
   hammer: hammerOptions = {},
   star: starOptions = {},
+  dryRun,
+  limit,
 } = {}) {
   const candles = await query(
     `select open_time, open, high, low, close from candles_${interval} where symbol=$1 order by open_time`,
     [symbol]
   );
+  const rowsLimit = limit !== undefined ? Math.min(candles.length, Number(limit)) : candles.length;
 
   const rows = [];
 
@@ -28,7 +31,7 @@ export async function detectPatterns({
     });
   }
 
-  for (let i = 1; i < candles.length; i++) {
+  for (let i = 1; i < rowsLimit; i++) {
     const prev = candles[i - 1];
     const curr = candles[i];
     rows.push({
@@ -40,7 +43,7 @@ export async function detectPatterns({
     });
   }
 
-  if (rows.length > 0) {
+  if (rows.length > 0 && !dryRun) {
     await upsertPatterns(symbol, rows, interval);
   }
 

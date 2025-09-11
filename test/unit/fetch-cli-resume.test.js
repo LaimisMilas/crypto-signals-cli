@@ -16,24 +16,28 @@ beforeEach(() => {
 
 test('passes resume flag when provided', async () => {
   await fetchKlines({ symbol: 'TEST', resume: true });
-  expect(fetchKlinesRange).toHaveBeenCalledWith({
-    symbol: 'TEST',
-    interval: '1m',
-    startMs: undefined,
-    endMs: undefined,
-    limit: 1000,
-    resume: true
-  });
+  expect(fetchKlinesRange).toHaveBeenCalledWith(
+    expect.objectContaining({
+      symbol: 'TEST',
+      interval: '1m',
+      startMs: undefined,
+      endMs: undefined,
+      limit: 1000,
+      resume: true
+    })
+  );
 });
 
 test('defaults resume to false when omitted', async () => {
   await fetchKlines({ symbol: 'TEST' });
-  expect(fetchKlinesRange).toHaveBeenCalledWith({
-    symbol: 'TEST',
-    interval: '1m',
-    startMs: undefined,
-    endMs: undefined,
-    limit: 1000,
-    resume: false
-  });
+  expect(fetchKlinesRange).toHaveBeenCalledWith(
+    expect.objectContaining({
+      symbol: 'TEST',
+      interval: '1m',
+      startMs: undefined,
+      endMs: undefined,
+      limit: 1000,
+      resume: false
+    })
+  );
 });
