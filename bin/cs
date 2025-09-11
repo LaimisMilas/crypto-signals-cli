@@ -47,6 +47,7 @@ program
   .command('backtest:run')
   .requiredOption('--strategy <strategy>')
   .requiredOption('--symbol <symbol>')
+  .requiredOption('--interval <interval>')
   .requiredOption('--from <from>')
   .requiredOption('--to <to>')
   .requiredOption('--initial <initial>')
