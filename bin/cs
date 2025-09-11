@@ -8,6 +8,7 @@ import { signalsGenerate } from '../src/cli/signals.js';
 import { backtestRun } from '../src/cli/backtest.js';
 import { paperEquitySnapshot } from '../src/cli/paper.js';
 import { resampleCandles } from '../src/cli/resample.js';
+import { jobsList, jobsRun } from '../src/cli/jobs.js';
 import logger from '../src/utils/logger.js';
 
 const program = new Command();
@@ -80,5 +81,16 @@ program
   .requiredOption('--equity <equity>')
   .requiredOption('--source <source>')
   .action(paperEquitySnapshot);
+
+program
+  .command('jobs:list')
+  .option('--limit <n>', 'limit number of jobs', (v) => parseInt(v, 10))
+  .action(jobsList);
+
+program
+  .command('jobs:run')
+  .requiredOption('--type <type>')
+  .option('--params <json>')
+  .action(jobsRun);
 
 program.parseAsync(process.argv);

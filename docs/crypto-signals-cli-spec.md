@@ -132,12 +132,8 @@ equity_paper(
 
 jobs(
   id bigserial primary key,
-  type text,
-  params jsonb,
-  status text,
-  started_at timestamptz,
-  finished_at timestamptz,
-  error text
+  name text,
+  run_at bigint
 );
 ```
 
