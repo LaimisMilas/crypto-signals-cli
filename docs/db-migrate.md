@@ -34,4 +34,3 @@ node bin/cs db:migrate [OPCIJOS]
    }
    ```
 3. Išsaugokite ir paleiskite migracijas komanda `node bin/cs db:migrate`.
-
