@@ -122,8 +122,6 @@ export async function up(pgm) {
     name: { type: 'text', notNull: true },
     run_at: { type: 'bigint' }
   });
-
-  pgm.createIndex('signals', ['symbol', 'open_time'], { unique: true });
 }
 
 export async function down(pgm) {
