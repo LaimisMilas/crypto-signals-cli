@@ -6,11 +6,11 @@ await jest.unstable_mockModule('../../src/storage/db.js', () => ({ withTransacti
 const { upsertSignals } = await import('../../src/storage/repos/signals.js');
 
 test('upserts signals with conflict handling', async () => {
-  await upsertSignals('BTC', [{ openTime: 1, signal: 'BUY' }]);
+  await upsertSignals('BTC', '1m', 'test', [{ openTime: 1, signal: 'BUY' }]);
   expect(query).toHaveBeenCalledWith(
     expect.stringContaining('insert into signals'),
-    ['BTC', 1, 'BUY']
+    ['BTC', '1m', 1, 'test', 'BUY']
   );
   const sql = query.mock.calls[0][0];
-  expect(sql).toMatch(/on conflict \(symbol, open_time\) do update set signal = excluded.signal/);
+  expect(sql).toMatch(/on conflict \(symbol, interval, open_time, strategy\) do update set signal = excluded.signal/);
 });
