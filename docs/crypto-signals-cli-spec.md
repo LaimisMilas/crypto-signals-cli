@@ -339,33 +339,6 @@ services:
 
 Jei `initdb: directory exists but is not empty`, išvalyti `./_data/pg` arba naudoti kitą volume kelią.
 
-## Makefile (pavyzdys)
-
-```Makefile
-.PHONY: dev db-up db-down migrate seed test lint
-
-dev:
-node --version
-
-db-up:
-docker compose up -d db adminer
-
-db-down:
-docker compose down
-
-migrate:
-npx node-pg-migrate up
-
-seed:
-node ./scripts/seed-symbols.js
-
-test:
-npm run test
-
-lint:
-npm run lint
-```
-
 ## Backtest ir Paper Trading
 
 - **Backtest**
@@ -405,3 +378,6 @@ npm run lint
 - `out/backtest/<strategy>_<symbol>_<interval>_<from>_<to>/`
   - `trades.csv`, `equity.csv`, `metrics.json`, `config.json`
 - `out/signals/<strategy>_<symbol>_<interval>_<date>.csv`
+
+## 
+docs/crypto-signals-cli-spec.md ## Testavimas reikia patikrinti kas yra padaryta ir ko dar truksta sukurti uzduotis.

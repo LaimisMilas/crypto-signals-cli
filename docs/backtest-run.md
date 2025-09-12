@@ -26,3 +26,29 @@ node bin/cs backtest:run --strategy SidewaysReversal --symbol BTCUSDT \
 5. Sugeneruoja `out/backtest/<...>/` aplanką su CSV/JSON rezultatais.
 6. Išveda „backtest completed“.
 
+## Pastabos
+- Prieš paleidžiant reikia išvalyti db lentele `trades_paper`
+
+## Failai
+
+cs backtest:run kiekvieną kartą sukuria aplanką out/backtest/<strategija>_<porą>_<intervalas>_<from>_<to>/, kuriame yra keli failai. Jie padeda įsivertinti strategijos rezultatus:
+
+config.json
+Saugomi visi paleidimo parametrai: strategijos pavadinimas, simbolis, intervalas, pradinė suma, mokesčių dydis ir t. t.
+Naudinga dalinantis ar atkuriant identišką backtestą vėliau.
+
+trades.csv
+Detalus kiekvieno sandorio sąrašas: įėjimo/išėjimo laikas, kryptis („buy“/„sell“), kaina, kiekis, P&L.
+Analizuokite skaičiuoklėje ar su pandas, kad matytumėte, kur strategija įeina/išeina ir kiek uždirbo prarado.
+
+equity.csv
+Balanso kreivė laikui bėgant.
+Puikiai tinka brėžti grafiką ir matyti, kaip kito sąskaitos vertė (galima skaičiuoti „drawdown“, lyginti kelias strategijas).
+
+metrics.json
+Agreguoti rodikliai: galutinis pelnas, ROI, „win rate“, maksimalus nuosmukis ir t. t.
+Tai greitas santraukos failas, kurį galite importuoti į kitus įrankius ar naudoti lyginant skirtingų testų rezultatus.
+Kur naudoti?
+Strategijų palyginimas: generuodami kelis backtestus su skirtingais parametrais ar strategijomis, galite palyginti metrics.json reikšmes.
+Grafikai ir ataskaitos: equity.csv bei trades.csv leidžia sukurti ataskaitas ar vizualizacijas (pvz., balanso kreivę, pelningų/nuostolingų sandorių pasiskirstymą).
+Tolesnė optimizacija: remdamiesi gautais rodikliais, galite keisti parametrus, filtruoti sandorius ar plėtoti naujas strategijas.
