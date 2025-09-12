@@ -74,3 +74,54 @@ test('generates signals for BBRevert strategy', async () => {
     { openTime: 2, signal: 'sell' },
   ]);
 });
+
+test('emits buy followed by sell on later candle', async () => {
+  queryMock
+    .mockResolvedValueOnce([
+      { open_time: 1, data: { trend: 'range', rsi: 20 }, close: 0 },
+      { open_time: 2, data: { trend: 'range', rsi: 40 }, close: 0 },
+      { open_time: 3, data: { trend: 'sideways', rsi: 80 }, close: 0 },
+    ])
+    .mockResolvedValueOnce([
+      {
+        open_time: 1,
+        bullish_engulfing: true,
+        bearish_engulfing: false,
+        hammer: false,
+        shooting_star: false,
+      },
+      {
+        open_time: 2,
+        bullish_engulfing: false,
+        bearish_engulfing: false,
+        hammer: false,
+        shooting_star: false,
+      },
+      {
+        open_time: 3,
+        bullish_engulfing: false,
+        bearish_engulfing: false,
+        hammer: false,
+        shooting_star: false,
+      },
+    ]);
+
+  await signalsGenerate({
+    symbol: 'BTC',
+    interval: '1m',
+    strategy: 'SidewaysReversal',
+    strategyConfig: '{}',
+  });
+
+  expect(upsertMock).toHaveBeenCalledWith(
+    'BTC',
+    '1m',
+    'SidewaysReversal',
+    expect.arrayContaining([
+      { openTime: 1, signal: 'buy' },
+      { openTime: 3, signal: 'sell' },
+    ]),
+  );
+  const signals = upsertMock.mock.calls[0][3];
+  expect(signals).toHaveLength(2);
+});
