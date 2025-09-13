@@ -12,7 +12,7 @@ const fetchMock = jest.fn(async url => {
   const end = Number(u.searchParams.get('endTime'));
   const limit = Number(u.searchParams.get('limit'));
   const interval = u.searchParams.get('interval');
-  const stepMap = { '1m': 60_000, '1h': 3_600_000, '1d': 86_400_000 };
+  const stepMap = { '1m': 60_000, '30m': 1_800_000, '1h': 3_600_000, '1d': 86_400_000 };
   const step = stepMap[interval];
   const candles = [];
   for (let t = start; (!end || t < end) && candles.length < limit; t += step) {
@@ -183,9 +183,22 @@ test('supports multiple intervals', async () => {
     endMs: 3 * 3_600_000,
     limit: 1000
   });
-  const url = new URL(fetchMock.mock.calls[0][0]);
+  let url = new URL(fetchMock.mock.calls[0][0]);
   expect(url.searchParams.get('interval')).toBe('1h');
   expect(insertMock.mock.calls[0][2]).toBe('1h');
+
+  fetchMock.mockClear();
+  insertMock.mockClear();
+  await fetchKlinesRange({
+    symbol: 'BTCUSDT',
+    interval: '30m',
+    startMs: 0,
+    endMs: 3 * 1_800_000,
+    limit: 1000
+  });
+  url = new URL(fetchMock.mock.calls[0][0]);
+  expect(url.searchParams.get('interval')).toBe('30m');
+  expect(insertMock.mock.calls[0][2]).toBe('30m');
 });
 
 test('syncs server time', async () => {
