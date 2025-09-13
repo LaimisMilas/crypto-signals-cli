@@ -71,6 +71,7 @@ candles_1m(
   unique(symbol, ts)
 );
 
+-- candles_30m(...) tas pats formatas, kitas intervalas
 -- candles_1h(...) tas pats formatas, kitas intervalas
 
 indicators_1m(
