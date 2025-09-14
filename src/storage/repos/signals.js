@@ -10,7 +10,13 @@ export async function upsertSignals(symbol, interval, strategy, signals) {
           `insert into signals (symbol, interval, open_time, strategy, signal)
            values ($1,$2,$3,$4,$5)
            on conflict (symbol, interval, open_time, strategy) do update set signal = excluded.signal`,
-          [symbol, interval, s.openTime, strategy, s.signal]
+          [
+            symbol,
+            interval,
+            s.openTime instanceof Date ? s.openTime : new Date(Number(s.openTime)),
+            strategy,
+            s.signal,
+          ]
         )
       )
     );

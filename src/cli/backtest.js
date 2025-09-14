@@ -42,7 +42,7 @@ export async function backtestRun(opts) {
   if (!signals) {
     const rows = await query(
       `select open_time, signal from signals where symbol=$1 and strategy=$2 and interval=$3 and open_time >= $4 and open_time <= $5 order by open_time`,
-      [symbol, strategy, interval, from, to]
+      [symbol, strategy, interval, new Date(Number(from)), new Date(Number(to))]
     );
     const map = new Map(rows.map((r) => [Number(r.open_time), r.signal]));
     signals = candles.map((c) => map.get(c.openTime) || null);
