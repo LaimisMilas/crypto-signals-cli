@@ -28,6 +28,7 @@ node bin/cs backtest:run --strategy SidewaysReversal --symbol BTCUSDT \
 
 ## Pastabos
 - Prieš paleidžiant reikia išvalyti db lentele `trades_paper`
+- Backtestas palaiko tik long sandorius; `sell` signalai uždaro atvirą poziciją ir neatidaro `short`
 
 ## Failai
 

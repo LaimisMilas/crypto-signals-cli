@@ -23,7 +23,7 @@ Yra įgyvendintos dvi strategijos: `BBRevert` ir `SidewaysReversal`. Strategijų
 - Modeliai: bullish/bearish engulfing, hammer ir shooting star.
 
 ## Backtest ir popierinė prekyba
-- `runBacktest` skaičiuoja laimėjimų procentą, pelno/failo santykį, maksimalų nuosmukį ir vidutinį PnL; palaiko ATR pagrįstus SL/TP lygius.
+- `runBacktest` skaičiuoja laimėjimų procentą, pelno/failo santykį, maksimalų nuosmukį ir vidutinį PnL; palaiko ATR pagrįstus SL/TP lygius ir vykdo tik long sandorius.
 - `LiveSimulator` leidžia atlikti žingsninę popierinę prekybą naudojant gautus signalus.
 
 ## Duomenų bazės struktūra
