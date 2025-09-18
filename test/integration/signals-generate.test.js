@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 
 const indicators = [
-  { open_time: 1, data: { bbands: { lower: 100, upper: 110 } }, close: 90 },
-  { open_time: 2, data: { bbands: { lower: 100, upper: 110 } }, close: 120 }
+  { open_time: 1, data: { bollinger: { lower: 100, upper: 110 } }, close: 90 },
+  { open_time: 2, data: { bollinger: { lower: 100, upper: 110 } }, close: 120 }
 ];
 const patterns = [
   {

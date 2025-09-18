@@ -85,9 +85,9 @@ describe('signals generation and backtest integration', () => {
   test('BBRevert generates signals and backtest produces trades', async () => {
     queryMock
       .mockResolvedValueOnce([
-        { open_time: 1, data: { price: 100, bbands: { lower: 90, upper: 110 } }, close: 100 },
-        { open_time: 2, data: { price: 80, bbands: { lower: 90, upper: 110 } }, close: 80 },
-        { open_time: 3, data: { price: 120, bbands: { lower: 90, upper: 110 } }, close: 120 },
+        { open_time: 1, data: { price: 100, bollinger: { lower: 90, upper: 110 } }, close: 100 },
+        { open_time: 2, data: { price: 80, bollinger: { lower: 90, upper: 110 } }, close: 80 },
+        { open_time: 3, data: { price: 120, bollinger: { lower: 90, upper: 110 } }, close: 120 },
       ])
       .mockResolvedValueOnce([
         {

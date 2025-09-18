@@ -11,8 +11,21 @@ export function aroon(highs, lows, period = 25) {
     lowWindow.push(lows[i]);
   }
 
-  const up = (highWindow.maxAge() / (period - 1)) * 100;
-  const down = (lowWindow.minAge() / (period - 1)) * 100;
+  const denominator = period - 1;
+  if (denominator === 0) {
+    return { up: 100, down: 100 };
+  }
 
-  return { up, down };
+  const upAge = highWindow.maxAge();
+  const downAge = lowWindow.minAge();
+
+  if (upAge == null || downAge == null) return null;
+
+  const up = ((denominator - upAge) / denominator) * 100;
+  const down = ((denominator - downAge) / denominator) * 100;
+
+  return {
+    up: Math.max(0, Math.min(100, up)),
+    down: Math.max(0, Math.min(100, down)),
+  };
 }
