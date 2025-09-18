@@ -16,6 +16,19 @@ test('trend up/down/range', () => {
   expect(trend(110, 100, 80, 50)).toBe('up');
   expect(trend(90, 100, 30, 70)).toBe('down');
   expect(trend(100, 100, 50, 50)).toBe('range');
+  expect(trend(100, null, 100, 0)).toBe('range');
+});
+
+test('trend reflects fresh highs and lows from aroon', () => {
+  const bullishHighs = [1, 2, 3, 4, 6];
+  const bullishLows = [0, 1, 2, 3, 4];
+  const bullishAroon = aroon(bullishHighs, bullishLows, 5);
+  expect(trend(110, 100, bullishAroon.up, bullishAroon.down)).toBe('up');
+
+  const bearishHighs = [6, 5, 4, 3, 2];
+  const bearishLows = [5, 4, 3, 2, 1];
+  const bearishAroon = aroon(bearishHighs, bearishLows, 5);
+  expect(trend(90, 100, bearishAroon.up, bearishAroon.down)).toBe('down');
 });
 
 test('hhll higher high & higher low', () => {
@@ -42,12 +55,20 @@ test('atr constant range', () => {
   expect(res).toBeCloseTo(2);
 });
 
-test('aroon extremes', () => {
+test('aroon newest extremes score highest', () => {
   const highs = [1, 2, 3];
-  const lows = [1, 2, 3];
+  const lows = [3, 2, 1];
   const res = aroon(highs, lows, 3);
-  expect(res.up).toBe(0);
+  expect(res.up).toBe(100);
   expect(res.down).toBe(100);
+});
+
+test('aroon older extremes decay towards zero', () => {
+  const highs = [1, 3, 5, 4, 2];
+  const lows = [5, 1, 3, 2, 4];
+  const res = aroon(highs, lows, 5);
+  expect(res.up).toBeCloseTo(50);
+  expect(res.down).toBeCloseTo(25);
 });
 
 test('bollinger flat', () => {

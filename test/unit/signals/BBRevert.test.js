@@ -4,7 +4,7 @@ import BBRevert from '../../../src/core/signals/strategies/BBRevert.js';
 test('entry returns buy when conditions met', () => {
   const ind = {
     close: 90,
-    bbands: { lower: 100, upper: 110 },
+    bollinger: { lower: 100, upper: 110 },
     aroon: { up: 60 },
     rsi: 50,
   };
@@ -15,7 +15,7 @@ test('entry returns buy when conditions met', () => {
 test('exit returns sell when close above upper band', () => {
   const ind = {
     close: 120,
-    bbands: { lower: 100, upper: 110 },
+    bollinger: { lower: 100, upper: 110 },
     aroon: { up: 40 },
     rsi: 50,
   };
@@ -26,10 +26,18 @@ test('exit returns sell when close above upper band', () => {
 test('no signal when rsi below 70 and price inside bands', () => {
   const ind = {
     close: 105,
-    bbands: { lower: 100, upper: 110 },
+    bollinger: { lower: 100, upper: 110 },
     aroon: { up: 40 },
     rsi: 65,
   };
   const sig = runStrategy(BBRevert, ind);
   expect(sig).toBeNull();
+});
+
+test('sell signal falls back to rsi when bands missing', () => {
+  const ind = {
+    close: 105,
+    rsi: 72,
+  };
+  expect(runStrategy(BBRevert, ind)).toBe('sell');
 });
